@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--
+════════════════════════════════════════════════════════════════════════
+  HOW TO EDIT THIS SITE  —  طريقة تعديل الموقع
+════════════════════════════════════════════════════════════════════════
+  1) Everything you change day to day lives in the Google Sheet set in
+     GOOGLE_SHEET_URL below (or in content.xlsx if that is left empty):
+     departments, treatments, doctors, FAQ, phone, WhatsApp, address,
+     texts, colours and the Google Calendar booking links.
+     كل ما تحتاج تعديله موجود في ملف content.xlsx (الأقسام، العلاجات،
+     الأطباء، الأسئلة، الهاتف، الواتساب، العنوان، النصوص، الألوان،
+     وروابط الحجز في تقويم جوجل). عدّل الملف ثم ارفعه بنفس الاسم.
+
+  2) Bookings: see SETUP.md for the Google Calendar steps.
+     الحجوزات: راجع ملف SETUP.md لخطوات ربط تقويم جوجل.
+
+  3) Images: logo.png, img/logo-white.png, img/favicon.png. Doctor photos go in
+     img/doctors/ and their path goes in the "photo" column of the Doctors tab.
+     صور الأطباء في مجلد img/doctors/ واكتب المسار في عمود photo.
+
+  4) Fixed interface words (buttons, labels) and their Arabic are in the
+     I18N dictionary near the bottom of this file.
+════════════════════════════════════════════════════════════════════════
+-->
+<script>
+window.CONFIG = {
+  /* ▼▼▼ GOOGLE SHEET — paste your published Google Sheet link between the quotes.
+     ضع رابط جوجل شيت المنشور بين علامتي التنصيص (راجع SETUP.md).
+     Empty = the site reads content.xlsx from the website folder instead. ▼▼▼ */
+  GOOGLE_SHEET_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRfzi2Dr1ty7S40im6S2LQf399D73RqeIOa58MfcEYBuFTc-n_MYpB6-PUrgDMMIkcGCZ6qJXvsL61b/pubhtml",
+  CONTENT_FILE: "content.xlsx",   // backup used when the Google Sheet is empty or unreachable
+  DEFAULT_LANG: "ar",             // اللغة الافتراضية
+  SITE_URL: "",                   // e.g. https://tabeeby.ae (for search engines)
+  XLSX_LIB: "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
+};
+document.documentElement.className = "js loading";
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+
+<title>مركز طبيبي الطبي | أسنان وجلدية وتجميل في المجاز، الشارقة</title>
+<meta name="description" content="مركز طبيبي الطبي في المجاز بالشارقة: طب أسنان الأطفال والكبار، الفينير، التيجان، تبييض الأسنان، أطقم الأسنان، والجلدية والتجميل. احجز موعدك أونلاين. Tabeeby Medical Center, Al Majaz, Sharjah: dental care for kids and adults, veneers, crowns, whitening, dentures, dermatology and cosmetology. Book online.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#039690">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tabeeby Medical Center">
+<meta property="og:title" content="مركز طبيبي الطبي | Tabeeby Medical Center">
+<meta property="og:description" content="احجز موعدك في الأسنان أو الجلدية والتجميل. Book dental, dermatology and cosmetology appointments online.">
+<meta property="og:image" content="logo.png">
+<meta property="og:locale" content="ar_AE">
+<meta property="og:locale:alternate" content="en_AE">
+
+<style>
+/* ═══ TOKENS (overwritten from CONFIG.COLORS at load) ═══ */
+:root{
+  --deep:#039690;--deep-soft:#027C77;--sand:#EAF4F3;--sand-soft:#F6FBFA;--accent:#BDF3E3;--ink:#2A428A;
+  --deep-rgb:3,150,144;--sand-rgb:234,244,243;--ink-rgb:42,66,138;--accent-rgb:189,243,227;
+  --f-d:'Cairo',Tahoma,sans-serif;--f-b:'Cairo',Tahoma,sans-serif;
+  --r-xl:28px;--r-sm:6px;--pad-x:24px;--sec-y:80px;--maxw:1280px;
+  --ease:cubic-bezier(.22,1,.36,1);--topo:none;--topo-dark:none;
+}
+@media(min-width:768px){:root{--r-xl:40px;--pad-x:48px;--sec-y:120px}}
+@media(min-width:1024px){:root{--r-xl:48px;--pad-x:80px;--sec-y:150px}}
+[dir=rtl]{--f-d:'Cairo',Tahoma,sans-serif;--f-b:'Cairo',Tahoma,sans-serif}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--sand);color:rgba(var(--ink-rgb),.88);font:300 1rem/1.7 var(--f-b);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+[dir=rtl] body{font-weight:400}
+[dir=rtl] *{letter-spacing:0!important}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+h1,h2,h3,h4{margin:0;font-family:var(--f-d);font-weight:500}
+p{margin:0}
+svg.i{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+[dir=rtl] .flip{transform:scaleX(-1)}
+.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:var(--pad-x)}
+.skip{position:absolute;inset-inline-start:-999px;top:8px;z-index:200;background:var(--sand);color:var(--deep);padding:10px 16px}
+.skip:focus{inset-inline-start:8px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+[hidden]{display:none!important}
+.ltr{direction:ltr;unicode-bidi:isolate}
+
+/* asymmetric "leaf" radii — logical corners so RTL mirrors automatically */
+.r-a{border-start-start-radius:var(--r-xl);border-start-end-radius:var(--r-xl);border-end-end-radius:var(--r-sm);border-end-start-radius:var(--r-xl)}
+.r-b{border-start-start-radius:var(--r-xl);border-start-end-radius:var(--r-xl);border-end-end-radius:var(--r-xl);border-end-start-radius:var(--r-sm)}
+.r-img{border-radius:24px;border-end-start-radius:4px}
+.r-c1{border-start-start-radius:32px;border-start-end-radius:8px;border-end-end-radius:32px;border-end-start-radius:8px}
+.r-c2{border-start-start-radius:8px;border-start-end-radius:32px;border-end-end-radius:8px;border-end-start-radius:32px}
+
+/* ═══ SECTIONS & TYPE ═══ */
+.sec{padding-block:var(--sec-y);position:relative}
+.dark{background:var(--deep);color:rgba(var(--sand-rgb),.84)}
+.light{background:var(--sand)}
+.light2{background:var(--sand-soft)}
+.topo{isolation:isolate}
+.topo::before{content:"";position:absolute;inset:0;background-image:var(--topo);background-size:640px;z-index:-1;pointer-events:none}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font:500 .75rem/1.4 var(--f-b);letter-spacing:.2em;text-transform:uppercase;color:rgba(var(--ink-rgb),.75);margin-bottom:18px}
+[dir=rtl] .eyebrow{font-size:.9rem}
+.dark .eyebrow{color:var(--accent)}
+.eyebrow svg{width:14px;height:14px;color:var(--accent)}
+.light .eyebrow svg,.light2 .eyebrow svg{color:var(--deep)}
+.h2{font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.05;letter-spacing:.01em;text-transform:uppercase;color:var(--deep)}
+.dark .h2{color:var(--accent);background:linear-gradient(180deg,var(--accent),rgba(var(--accent-rgb),.8));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.h2 em{font-style:italic;font-weight:400;text-transform:none}
+[dir=rtl] .h2 em{font-style:normal;font-weight:400}
+[dir=rtl] .h2,[dir=rtl] .h1{line-height:1.35;font-weight:700}
+.sh{text-align:center;max-width:780px;margin:0 auto 56px}
+.sh p{max-width:60ch;margin:20px auto 0;opacity:.85}
+.rule{display:block;width:160px;height:1px;background:var(--accent);opacity:.45;margin:28px auto 0}
+
+/* ═══ BUTTONS ═══ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;font:500 .78rem/1.2 var(--f-b);letter-spacing:.16em;text-transform:uppercase;border:1px solid transparent;border-radius:999px;border-end-end-radius:12px;transition:background .28s ease-out,color .28s ease-out,border-color .28s ease-out;text-align:center}
+[dir=rtl] .btn{font-size:.95rem;font-weight:600}
+.btn svg.i{width:18px;height:18px}
+.btn-deep{background:var(--deep);color:var(--sand)}
+.btn-deep:hover{background:var(--deep-soft)}
+.btn-line{border-color:var(--deep);color:var(--deep)}
+.btn-line:hover{background:var(--deep);color:var(--sand)}
+.btn-sand{background:var(--sand);color:var(--deep)}
+.btn-sand:hover{background:var(--sand-soft)}
+.btn-ghost{border-color:rgba(var(--sand-rgb),.75);color:var(--sand)}
+.btn-ghost:hover{background:var(--sand);color:var(--deep)}
+.btn-block{width:100%}
+.btn-sm{min-height:44px;padding:0 18px;font-size:.72rem}
+.link{display:inline-flex;align-items:center;gap:8px;min-height:44px;font:500 .75rem var(--f-b);letter-spacing:.16em;text-transform:uppercase;color:var(--deep);border-bottom:1px solid rgba(var(--deep-rgb),.3);transition:border-color .25s}
+[dir=rtl] .link{font-size:.9rem}
+.link:hover{border-color:var(--deep)}
+.dark .link{color:var(--accent);border-color:rgba(var(--accent-rgb),.4)}
+.link svg.i{width:18px;height:18px}
+
+/* ═══ HEADER ═══ */
+.hdr{position:fixed;inset:0 0 auto;z-index:70;background:linear-gradient(rgba(var(--deep-rgb),.55),rgba(var(--deep-rgb),0));transition:background .3s ease-out,box-shadow .3s ease-out}
+.hdr.solid,.menu-open .hdr{background:var(--deep);box-shadow:0 1px 0 rgba(var(--accent-rgb),.15)}
+.hdr-in{display:flex;align-items:center;gap:10px;height:76px}
+.brand{margin-inline-end:auto;display:flex;align-items:center;gap:12px;min-height:44px;color:var(--sand)}
+.brand-mark{height:46px;width:auto;filter:brightness(0) invert(94%) sepia(10%) saturate(300%) hue-rotate(350deg)}
+.wordmark{font:400 .74rem/1.25 var(--f-d);letter-spacing:.24em;text-transform:uppercase}
+.wordmark b{display:block;font-weight:500;font-size:1.05rem;letter-spacing:.3em}
+[dir=rtl] .wordmark{font-size:.8rem}
+[dir=rtl] .wordmark b{font-size:1.1rem}
+.nav{display:none}
+.nav a{font:500 .72rem var(--f-b);letter-spacing:.18em;text-transform:uppercase;color:rgba(var(--sand-rgb),.88);padding:12px 0;transition:color .25s}
+[dir=rtl] .nav a{font-size:.95rem}
+.nav a:hover{color:var(--accent)}
+.hdr-end{display:flex;align-items:center;gap:4px}
+.lang{min-height:44px;min-width:44px;padding:0 8px;font:500 .8rem 'Cairo',var(--f-b);letter-spacing:.14em;text-transform:uppercase;color:var(--sand)}
+.lang:hover{color:var(--accent)}
+.hdr-cta{display:none}
+.burger{width:44px;height:44px;display:grid;place-content:center;gap:6px}
+.burger span{display:block;width:24px;height:1.5px;background:var(--sand);transition:transform .3s,opacity .3s}
+.menu-open .burger span:nth-child(1){transform:translateY(7.5px) rotate(45deg)}
+.menu-open .burger span:nth-child(2){opacity:0}
+.menu-open .burger span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg)}
+@media(min-width:768px){.hdr-cta{display:inline-flex;margin-inline-start:8px}}
+@media(min-width:1180px){.nav{display:flex;gap:30px;margin-inline-end:14px}.burger{display:none}}
+
+.menu{position:fixed;inset:0;z-index:65;background:var(--deep);color:var(--sand);padding:110px var(--pad-x) 40px;overflow-y:auto;display:flex;flex-direction:column;gap:36px}
+.menu nav{display:flex;flex-direction:column;gap:4px}
+.menu nav a{font:500 clamp(1.9rem,8vw,2.6rem)/1.3 var(--f-d);text-transform:uppercase;color:var(--sand);opacity:0;transform:translateY(12px);transition:opacity .5s var(--ease),transform .5s var(--ease),color .25s;padding:4px 0}
+[dir=rtl] .menu nav a{font-weight:600}
+.menu nav a:hover{color:var(--accent)}
+.menu.show nav a{opacity:1;transform:none}
+.menu .m-contact{display:grid;gap:12px;border-top:1px solid rgba(var(--accent-rgb),.2);padding-top:28px}
+.menu .eyebrow{color:var(--accent)}
+
+/* ═══ HERO ═══ */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:flex-end;color:var(--sand);padding:120px 0 56px;overflow:hidden;background:var(--deep)}
+.hero .hero-bg{position:absolute;inset:0}
+.hero-bg img{width:100%;height:100%;object-fit:cover;filter:saturate(.82) contrast(.96);animation:kb 20s ease-out forwards}
+.hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(var(--deep-rgb),.62),rgba(var(--deep-rgb),.42) 42%,rgba(var(--deep-rgb),.88))}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.06)}}
+.hero-in{position:relative;display:grid;gap:44px;width:100%;align-items:end}
+.hero-copy,.hero-form{transition:opacity .6s ease-out}
+.loading .hero-copy,.loading .hero-form{opacity:0}
+.hero-eyebrow{font:500 .78rem/1.5 var(--f-b);letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;text-shadow:0 1px 12px rgba(var(--deep-rgb),.9)}
+[dir=rtl] .hero-eyebrow{font-size:.95rem}
+.h1{font-size:clamp(2.1rem,5vw,3.9rem);line-height:1.08;letter-spacing:.01em;color:var(--sand);max-width:20ch}
+.hero-sub{margin-top:20px;max-width:34rem;font-size:1.12rem;color:rgba(var(--sand-rgb),.9)}
+.hero-offer{margin-top:14px;font:500 1.12rem var(--f-b);color:var(--sand)}
+[dir=rtl] .hero-offer{font-weight:600}
+.hero-promo{margin-top:10px;font:500 clamp(1.7rem,3.6vw,2.6rem)/1.15 var(--f-d);font-style:italic;color:var(--accent)}
+[dir=rtl] .hero-promo{font-style:normal;font-weight:700}
+.hero-note{margin-top:8px;font-size:.78rem;color:rgba(var(--sand-rgb),.72);max-width:38ch}
+.hero-facts{display:flex;flex-wrap:wrap;gap:18px 44px;margin-top:30px;padding-top:22px;border-top:1px solid rgba(var(--sand-rgb),.25);max-width:560px}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:20px 18px;margin-top:34px;padding-top:24px;border-top:1px solid rgba(var(--sand-rgb),.25);max-width:680px}
+@media(min-width:900px){.hero-stats{grid-template-columns:repeat(4,1fr);gap:16px}}
+.hero-stats li{list-style:none;display:flex;gap:12px;align-items:flex-start}
+.hero-stats svg.i{width:24px;height:24px;color:var(--accent);margin-top:4px}
+.hero-stats b{display:block;font:500 clamp(1.25rem,2.2vw,1.55rem)/1.15 var(--f-d);color:var(--sand)}
+[dir=rtl] .hero-stats b{font-weight:700}
+.hero-stats small{display:block;font-size:.8rem;line-height:1.35;color:rgba(var(--sand-rgb),.75);margin-top:4px}
+[dir=rtl] .hero-stats small{font-size:.88rem}
+.hero-facts small{display:block;font:500 .7rem var(--f-b);letter-spacing:.18em;text-transform:uppercase;color:rgba(var(--sand-rgb),.75)}
+[dir=rtl] .hero-facts small{font-size:.85rem}
+.hero-facts b{display:block;font:500 1.6rem/1.2 var(--f-d);color:var(--accent);margin-top:4px}
+[dir=rtl] .hero-facts b{font-weight:700}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.hero-ctas .btn{flex:1 1 100%}
+@media(min-width:560px){.hero-ctas .btn{flex:0 0 auto}}
+@media(min-width:1024px){.hero-in{grid-template-columns:minmax(0,1fr) 420px;gap:64px}.hero{padding-bottom:80px}}
+
+/* ═══ FORMS ═══ */
+.fcard{background:var(--sand);color:var(--ink);padding:28px 20px;box-shadow:0 24px 60px rgba(0,0,0,.14);border-top:3px solid var(--deep)}
+@media(min-width:480px){.fcard{padding:32px 30px}}
+.f-title{font:500 1.5rem/1.2 var(--f-d);color:var(--deep)}
+[dir=rtl] .f-title{font-weight:700}
+.f-sub{font-size:.92rem;color:rgba(var(--ink-rgb),.78);margin:6px 0 20px;padding-bottom:18px;border-bottom:1px solid rgba(var(--ink-rgb),.12)}
+.fld{display:block;margin:0 0 14px;border:0;padding:0;min-width:0}
+.fld>span,.fld legend{display:block;font:500 .7rem/1.4 var(--f-b);letter-spacing:.16em;text-transform:uppercase;color:rgba(var(--ink-rgb),.78);margin-bottom:7px;padding:0}
+[dir=rtl] .fld>span,[dir=rtl] .fld legend{font-size:.85rem}
+.inp{width:100%;min-height:50px;padding:12px 14px;background:var(--sand-soft);border:1px solid rgba(var(--ink-rgb),.22);border-radius:10px;border-end-end-radius:3px;color:var(--ink);font-weight:400;font-size:1rem;transition:border-color .25s,box-shadow .25s}
+textarea.inp{min-height:92px;resize:vertical}
+select.inp{appearance:none;-webkit-appearance:none;padding-inline-end:34px;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-size:5px 5px;background-repeat:no-repeat;background-position:calc(100% - 18px) 22px,calc(100% - 13px) 22px}
+[dir=rtl] select.inp{background-position:13px 22px,18px 22px}
+.inp::placeholder{color:rgba(var(--ink-rgb),.5)}
+.inp:focus{outline:none;border-color:var(--deep);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.35)}
+.inp[aria-invalid=true]{border-color:#9B3B2E}
+.phone{display:flex;gap:6px}
+.phone select{flex:0 0 126px;padding-inline:10px 26px}
+.phone input{flex:1;min-width:0}
+.radios{display:flex;gap:8px;flex-wrap:wrap}
+.radios label{flex:1 1 110px;display:flex;align-items:center;gap:10px;min-height:50px;padding:0 12px;border:1px solid rgba(var(--ink-rgb),.22);border-radius:10px;cursor:pointer;font-weight:400;background:var(--sand-soft)}
+.radios input{accent-color:var(--deep);width:18px;height:18px;flex:none}
+.f-err{color:#9B3B2E;font-size:.9rem;font-weight:500;margin:-4px 0 12px}
+.f-err:empty{display:none}
+.f-note{font-size:.8rem;text-align:center;color:rgba(var(--ink-rgb),.7);margin-top:14px}
+.hp{position:absolute!important;inset-inline-start:-9999px;width:1px;height:1px;opacity:0}
+.sent{text-align:center;padding:18px 4px}
+.sent .badge{margin:0 auto 18px}
+.sent h3{font:500 1.6rem var(--f-d);color:var(--deep);margin-bottom:10px}
+.sent p{margin-bottom:22px}
+.grid2{display:grid;gap:0 12px}
+@media(min-width:560px){.grid2{grid-template-columns:1fr 1fr}}
+.badge{width:56px;height:56px;border-radius:50%;background:var(--deep);color:var(--sand);display:grid;place-items:center;flex:none}
+.badge svg.i{width:24px;height:24px}
+
+/* ═══ TRUST STRIP ═══ */
+.trust{padding-block:34px;border-top:1px solid rgba(var(--accent-rgb),.14)}
+.trust ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:22px 18px}
+.trust li{display:flex;align-items:center;gap:12px;font:500 .72rem/1.45 var(--f-b);letter-spacing:.14em;text-transform:uppercase;color:rgba(var(--sand-rgb),.88)}
+[dir=rtl] .trust li{font-size:.9rem}
+.trust svg.i{color:var(--accent)}
+@media(min-width:1024px){.trust ul{grid-template-columns:repeat(4,1fr)}}
+
+/* ═══ ABOUT FEATURED ═══ */
+.about-grid{display:grid;gap:44px;align-items:center}
+@media(min-width:1024px){.about-grid{grid-template-columns:1fr 1.05fr;gap:80px}}
+.about .h2{margin-bottom:28px;text-transform:none;font-size:clamp(2.1rem,4.6vw,3.6rem)}
+.about .h2 em{margin-inline-end:.25em}
+.about-body{max-width:60ch}
+.about-body p+p{margin-top:16px}
+.btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.btns .btn{flex:1 1 200px}
+@media(min-width:560px){.btns .btn{flex:0 0 auto}}
+.media{position:relative;overflow:hidden;background:var(--deep)}
+.media img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease-out}
+.about-media:hover img{transform:scale(1.05)}
+.noimg{background:var(--deep) var(--topo-dark);background-size:420px}
+.noimg::after{content:"";position:absolute;inset:0;margin:auto;width:46px;height:46px;background:var(--accent);opacity:.5;-webkit-mask:var(--star) center/contain no-repeat;mask:var(--star) center/contain no-repeat}
+.about-media{aspect-ratio:3/2;margin:0}
+.specs-strip{list-style:none;margin:72px auto 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:40px 16px;text-align:center}
+@media(min-width:900px){.specs-strip{grid-template-columns:repeat(4,1fr)}}
+.specs-strip li{display:flex;flex-direction:column;align-items:center}
+.specs-strip .badge{margin-bottom:16px}
+.specs-strip b{font:500 clamp(1.3rem,2.6vw,1.9rem)/1.15 var(--f-d);color:var(--deep)}
+[dir=rtl] .specs-strip b{font-weight:700}
+.specs-strip li>span:not(.badge){font-size:.9rem;color:rgba(var(--ink-rgb),.78);margin-top:6px}
+.specs-strip li::after{content:"";width:120px;max-width:70%;height:1px;background:rgba(var(--deep-rgb),.2);margin-top:18px}
+
+.about-lists{display:grid;gap:24px;margin-top:28px;max-width:60ch}
+@media(min-width:600px){.about-lists{grid-template-columns:1fr 1fr}}
+.about-lists h4,.pmore h4{font:500 .7rem var(--f-b);letter-spacing:.18em;text-transform:uppercase;color:var(--deep);margin:0 0 10px}
+[dir=rtl] .about-lists h4,[dir=rtl] .pmore h4{font-size:.85rem}
+.ticks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ticks li{display:flex;gap:10px;align-items:flex-start;font-size:.93rem;line-height:1.5}
+.ticks svg.i{width:18px;height:18px;margin-top:2px;color:var(--deep)}
+.pmore-btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:10px;font:500 .75rem var(--f-b);letter-spacing:.16em;text-transform:uppercase;color:var(--deep)}
+[dir=rtl] .pmore-btn{font-size:.9rem}
+.pmore-btn svg{width:18px;height:18px;transition:transform .3s}
+.pmore-btn[aria-expanded=true] svg{transform:rotate(45deg)}
+.pmore{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--ease)}
+.pmore>div{overflow:hidden}
+.pmore-btn[aria-expanded=true]+.pmore{grid-template-rows:1fr}
+.pmore-in{display:grid;gap:24px;padding:18px 0 4px;border-top:1px solid rgba(var(--ink-rgb),.12);margin-top:8px}
+@media(min-width:600px){.pmore-in{grid-template-columns:1fr 1fr}}
+
+/* ═══ MARQUEE ═══ */
+.marquee{padding-block:44px;overflow:hidden;text-align:center}
+.mq{overflow:hidden;direction:ltr;-webkit-mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.mq-track{display:flex;width:max-content;animation:mq 42s linear infinite}
+.mq:hover .mq-track{animation-play-state:paused}
+.mq-item{display:flex;align-items:center;gap:28px;padding-inline-end:28px;font:400 clamp(1.25rem,2.4vw,1.75rem) var(--f-d);color:rgba(var(--sand-rgb),.6);white-space:nowrap;transition:color .3s}
+.mq-item:lang(ar){font-family:'Cairo',sans-serif}
+.mq-item:hover{color:var(--sand)}
+.mq-item svg{width:14px;height:14px;color:var(--accent);fill:currentColor}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ═══ PROJECTS ═══ */
+.chips{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 6px;margin:0 auto 24px;max-width:max-content}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border:1px solid rgba(var(--ink-rgb),.22);border-radius:999px;border-end-end-radius:10px;font:500 .72rem var(--f-b);letter-spacing:.16em;text-transform:uppercase;color:var(--deep);transition:background .25s,color .25s}
+[dir=rtl] .chip{font-size:.9rem}
+.chip svg.i{width:18px;height:18px}
+.chip small{opacity:.65;font-size:.7rem}
+.chip[aria-pressed=true],.chip:hover{background:var(--deep);color:var(--sand);border-color:var(--deep)}
+.proj{display:grid;gap:28px;padding-block:44px;border-top:1px solid rgba(var(--ink-rgb),.12)}
+.proj:first-child{border-top:0;padding-top:12px}
+@media(min-width:1024px){.proj{grid-template-columns:1.1fr 1fr;gap:64px;align-items:center;padding-block:64px}.proj:nth-child(even) .car{order:2}}
+.car{position:relative;overflow:hidden;background:var(--deep);aspect-ratio:4/3}
+.car-track{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+.car-track::-webkit-scrollbar{display:none}
+.car-slide{flex:0 0 100%;height:100%;scroll-snap-align:start;position:relative;overflow:hidden}
+.car-slide img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease-out}
+.car:hover .car-slide img{transform:scale(1.05)}
+.car::after{content:"";position:absolute;inset:auto 0 0;height:36%;background:linear-gradient(transparent,rgba(var(--deep-rgb),.6));pointer-events:none}
+.car-tag{position:absolute;top:16px;inset-inline-start:16px;z-index:2;background:rgba(var(--deep-rgb),.65);color:var(--sand);padding:7px 14px;font:500 .68rem var(--f-b);letter-spacing:.16em;text-transform:uppercase;border-radius:999px;border-end-start-radius:6px}
+[dir=rtl] .car-tag{font-size:.82rem}
+.car-exp{position:absolute;top:10px;inset-inline-end:10px;z-index:2;width:44px;height:44px;border-radius:12px;background:rgba(var(--deep-rgb),.45);color:var(--sand);display:grid;place-items:center;transition:background .25s}
+.car-exp:hover{background:rgba(var(--deep-rgb),.75)}
+.car-exp svg.i{width:18px;height:18px}
+.car-nav{position:absolute;top:50%;z-index:2;width:44px;height:44px;margin-top:-22px;border-radius:50%;border:1px solid rgba(var(--sand-rgb),.75);color:var(--sand);display:none;place-items:center;background:rgba(var(--deep-rgb),.25);transition:background .25s}
+.car-nav:hover{background:rgba(var(--deep-rgb),.6)}
+.car-prev{inset-inline-start:16px}.car-next{inset-inline-end:16px}
+@media(min-width:768px){.car-nav{display:grid}}
+.car-dots{position:absolute;bottom:12px;inset-inline:0;z-index:2;display:flex;justify-content:center;gap:2px}
+.car-dots button{width:28px;height:28px;display:grid;place-items:center}
+.car-dots button::before{content:"";width:7px;height:7px;border-radius:99px;background:rgba(var(--sand-rgb),.55);transition:width .3s,background .3s}
+.car-dots button[aria-current=true]::before{width:22px;background:var(--sand)}
+.single .car-nav,.single .car-dots{display:none}
+.type-chip{display:inline-block;background:var(--sand);color:var(--deep);padding:7px 18px;border-radius:999px;border-end-end-radius:8px;font:500 .72rem var(--f-b);letter-spacing:.12em;text-transform:uppercase}
+[dir=rtl] .type-chip{font-size:.85rem}
+.proj h3{font-size:clamp(1.55rem,2.6vw,2.1rem);line-height:1.1;text-transform:uppercase;letter-spacing:.03em;color:var(--deep);margin:18px 0 6px}
+[dir=rtl] .proj h3{font-weight:700}
+.proj .dev{font:500 .74rem var(--f-b);letter-spacing:.16em;text-transform:uppercase;color:rgba(var(--ink-rgb),.7);margin-bottom:16px}
+[dir=rtl] .proj .dev{font-size:.9rem}
+.proj .desc{max-width:58ch}
+.pspecs{list-style:none;margin:24px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:16px 20px}
+.pspecs li{display:flex;align-items:center;gap:12px;font-weight:500;color:var(--deep);font-size:.95rem;line-height:1.35}
+.proj .btns{margin-top:28px}
+.proj .wa-line{margin-top:14px}
+.empty{text-align:center;max-width:52ch;margin:0 auto;padding:40px 0}
+.empty p{margin-bottom:24px}
+
+/* ═══ WHY CARDS ═══ */
+.cards{display:grid;gap:18px}
+@media(min-width:680px){.cards{grid-template-columns:1fr 1fr}}
+@media(min-width:1180px){.cards{grid-template-columns:repeat(4,1fr)}}
+.card{position:relative;padding:30px 26px 34px;background:linear-gradient(180deg,var(--deep-soft),var(--deep));border:1px solid rgba(var(--accent-rgb),.16);transition:transform .3s ease-out,filter .3s ease-out}
+.card:hover{transform:translateY(-4px);filter:brightness(1.08)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:34px}
+.card-num{font:500 2.5rem/1 var(--f-d);color:rgba(var(--sand-rgb),.45)}
+.card-top svg{color:var(--accent)}
+.card h3{font-size:1.3rem;line-height:1.25;color:var(--sand);margin-bottom:12px}
+[dir=rtl] .card h3{font-weight:700}
+.card p{font-size:.92rem;color:rgba(var(--sand-rgb),.75)}
+
+/* ═══ HOW WE WORK ═══ */
+.how{display:grid;gap:22px}
+@media(min-width:1024px){.how{grid-template-columns:1.05fr 1fr;gap:48px;align-items:stretch}}
+.how-panel{position:relative;background:linear-gradient(180deg,var(--deep),var(--deep-soft));padding:34px 16px 20px;color:var(--sand);overflow:hidden}
+@media(min-width:480px){.how-panel{padding:44px 30px 30px}}
+.how-ghost{position:absolute;top:6px;inset-inline-end:22px;font:500 4.5rem/1 var(--f-d);color:rgba(var(--sand-rgb),.12)}
+.how-panel>svg{color:var(--accent);margin:0 0 26px 14px}
+.steps{list-style:none;margin:0;padding:0}
+.steps li+li{border-top:1px solid rgba(var(--sand-rgb),.12)}
+.step{display:flex;width:100%;align-items:center;gap:14px;min-height:62px;padding:12px 16px;text-align:start;font:500 .8rem/1.4 var(--f-b);letter-spacing:.16em;text-transform:uppercase;color:rgba(var(--sand-rgb),.88);transition:background .25s,color .25s}
+[dir=rtl] .step{font-size:1rem}
+.step span{font-family:var(--f-d);font-size:1rem;letter-spacing:0;color:var(--accent);width:26px;flex:none}
+.step b{font-weight:500}
+.step[aria-selected=true]{background:var(--sand);color:var(--deep);border-radius:22px;border-end-end-radius:4px}
+.step[aria-selected=true] span{color:var(--deep)}
+.how-detail{padding:34px 24px;background:var(--sand-soft);display:flex;flex-direction:column;justify-content:center;transition:opacity .25s ease-out}
+@media(min-width:768px){.how-detail{padding:48px}}
+.how-detail.fade{opacity:0}
+.how-detail .num{font:500 1rem var(--f-d);color:rgba(var(--ink-rgb),.6);letter-spacing:.14em;margin-bottom:10px}
+.how-detail h3{font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.15;color:var(--deep);margin-bottom:16px}
+[dir=rtl] .how-detail h3{font-weight:700}
+.how-detail p{max-width:52ch}
+
+/* ═══ RELEASE CTA BAND ═══ */
+.release{overflow:hidden;padding-block:calc(var(--sec-y) + 20px)}
+.release .release-bg{position:absolute;inset:0}
+.release-bg img{width:100%;height:100%;object-fit:cover;filter:saturate(.7)}
+.release-bg::after{content:"";position:absolute;inset:0;background:rgba(var(--deep-rgb),.88)}
+.release .wrap{position:relative}
+.release .sh{margin-bottom:0}
+.release-form{max-width:960px;margin:44px auto 0}
+.release-grid{display:grid;gap:0 14px}
+@media(min-width:900px){.release-grid{grid-template-columns:1fr 1fr 1.2fr}}
+.release .fld>span{color:rgba(var(--sand-rgb),.8)}
+.release .inp{background:rgba(var(--sand-rgb),.08);border-color:rgba(var(--sand-rgb),.3);color:var(--sand)}
+.release .inp::placeholder{color:rgba(var(--sand-rgb),.55)}
+.release select.inp option{color:var(--ink);background:var(--sand)}
+.release form>.btn{display:flex;max-width:640px;width:100%;margin:18px auto 0;min-height:60px}
+.release .f-note{color:rgba(var(--sand-rgb),.72)}
+.release .sent h3{color:var(--accent)}
+.release .f-err{color:#F2BBAE;text-align:center}
+
+/* ═══ FAQ ═══ */
+.faq{max-width:880px;margin:0 auto}
+.faq-item{border-bottom:1px solid rgba(var(--ink-rgb),.15)}
+.faq-q{display:flex;width:100%;align-items:center;justify-content:space-between;gap:20px;padding:24px 0;text-align:start;font:500 clamp(1.08rem,2vw,1.3rem)/1.35 var(--f-d);color:var(--deep)}
+[dir=rtl] .faq-q{font-weight:600}
+.faq-q svg{transition:transform .3s ease-out}
+.faq-q[aria-expanded=true] svg{transform:rotate(45deg)}
+.faq-a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--ease)}
+.faq-a>div{overflow:hidden}
+.faq-a p{padding:0 0 26px;max-width:70ch}
+.faq-q[aria-expanded=true]+.faq-a{grid-template-rows:1fr}
+
+/* ═══ CONTACT ═══ */
+.contact-grid{display:grid;gap:44px}
+@media(min-width:1024px){.contact-grid{grid-template-columns:1fr 1fr;gap:64px}}
+.contact .sh{text-align:start;margin:0 0 36px}
+.contact .sh p{margin-inline:0}
+.crow{list-style:none;margin:0 0 36px;padding:0;display:grid;gap:18px}
+.crow a,.crow div{display:flex;gap:14px;align-items:flex-start;color:rgba(var(--sand-rgb),.9);transition:color .25s}
+.crow a:hover{color:var(--accent)}
+.crow svg.i{color:var(--accent);margin-top:2px}
+.crow small{display:block;font:500 .68rem var(--f-b);letter-spacing:.18em;text-transform:uppercase;color:rgba(var(--sand-rgb),.65)}
+[dir=rtl] .crow small{font-size:.82rem}
+.map{position:relative;min-height:380px;height:100%;overflow:hidden;background:var(--deep-soft)}
+.map iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:grayscale(.35) contrast(.95)}
+.map-link{margin-top:14px}
+
+/* ═══ FOOTER ═══ */
+.foot{padding:72px 0 110px;background:var(--sand);color:var(--ink)}
+@media(min-width:1024px){.foot{padding-bottom:40px}}
+.foot-top{display:grid;gap:40px}
+@media(min-width:900px){.foot-top{grid-template-columns:1.2fr 1fr 1fr;align-items:start}}
+.foot-logo{display:inline-block}
+.foot-logo img{width:190px;height:auto}
+.foot p.tag{margin-top:18px;max-width:36ch;font-size:.95rem}
+.social{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.social a{width:44px;height:44px;display:grid;place-items:center;border:1px solid rgba(var(--deep-rgb),.22);border-radius:50%;color:var(--deep);transition:background .25s,color .25s}
+.social a:hover{background:var(--deep);color:var(--sand)}
+.social svg.i{width:20px;height:20px}
+.foot .crow{margin:0}
+.foot .crow a,.foot .crow div{color:var(--ink)}
+.foot .crow a:hover{color:var(--deep-soft)}
+.foot .crow svg.i{color:var(--deep)}
+.foot .crow small{color:rgba(var(--ink-rgb),.65)}
+.foot h4{margin:0 0 18px;font:500 .72rem var(--f-b);letter-spacing:.2em;text-transform:uppercase;color:var(--deep)}
+[dir=rtl] .foot h4{font-size:.9rem}
+.foot-links{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.foot-links a{display:inline-block;padding:8px 0}
+.foot-links a:hover{color:var(--deep-soft);text-decoration:underline}
+.foot-bar{margin-top:48px;padding-top:20px;border-top:1px solid rgba(var(--deep-rgb),.15);display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;align-items:center;font:500 .72rem var(--f-b);letter-spacing:.14em;text-transform:uppercase;color:rgba(var(--ink-rgb),.75)}
+[dir=rtl] .foot-bar{font-size:.85rem}
+.foot-bar nav{display:flex;gap:4px 18px;flex-wrap:wrap}
+.foot-bar nav a{display:inline-block;padding:12px 0;text-decoration:underline;text-underline-offset:3px}
+
+/* ═══ FLOATING ═══ */
+.rail{display:none}
+@media(min-width:1024px){
+  .rail{display:flex;flex-direction:column;position:fixed;inset-inline-end:0;top:50%;transform:translateY(-50%);z-index:40;background:var(--sand-soft);box-shadow:0 24px 60px rgba(0,0,0,.14);border-start-start-radius:22px;border-end-start-radius:4px;overflow:hidden}
+  .rail a,.rail button{display:flex;flex-direction:column;align-items:center;gap:6px;width:92px;padding:16px 6px;font:500 .62rem/1.3 var(--f-b);letter-spacing:.12em;text-transform:uppercase;color:var(--deep);text-align:center;transition:background .25s}
+  [dir=rtl] .rail a,[dir=rtl] .rail button{font-size:.78rem}
+  .rail>*+*{border-top:1px solid rgba(var(--deep-rgb),.1)}
+  .rail a:hover,.rail button:hover{background:var(--sand)}
+}
+.fab,.fpill{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));z-index:45;opacity:0;transform:translateY(20px);pointer-events:none;transition:opacity .35s ease-out,transform .35s ease-out,background .3s,color .3s;box-shadow:0 24px 60px rgba(0,0,0,.22)}
+.past-hero .fab,.past-hero .fpill{opacity:1;transform:none;pointer-events:auto}
+.fab{inset-inline-end:16px;width:58px;height:58px;border-radius:50%;background:var(--deep);color:var(--sand);display:grid;place-items:center}
+.fab svg.i{width:28px;height:28px}
+.fpill{inset-inline-start:16px;inset-inline-end:88px;min-height:58px;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--deep);color:var(--sand);font:500 .76rem var(--f-b);letter-spacing:.16em;text-transform:uppercase;border-radius:999px;border-end-end-radius:12px}
+[dir=rtl] .fpill{font-size:.95rem;font-weight:600}
+.fpill.on-dark,.fab.on-dark{background:var(--sand);color:var(--deep)}
+@media(min-width:600px){.fpill{inset-inline-start:50%;inset-inline-end:auto;transform:translate(-50%,20px);padding:0 34px}.past-hero .fpill{transform:translate(-50%,0)}[dir=rtl] .fpill{transform:translate(50%,20px)}[dir=rtl] .past-hero .fpill{transform:translate(50%,0)}}
+@media(min-width:1024px){.fpill{display:none}.fab{bottom:28px;inset-inline-end:28px}}
+.modal-open .fab,.modal-open .fpill,.menu-open .fab,.menu-open .fpill{opacity:0;pointer-events:none}
+
+/* ═══ DIALOGS ═══ */
+dialog{border:0;padding:0;background:transparent;color:var(--ink);max-height:92vh;max-height:92dvh;width:min(540px,calc(100% - 24px));max-width:none;overflow:visible}
+dialog::backdrop{background:rgba(var(--deep-rgb),.75)}
+.mcard{position:relative;max-height:92vh;max-height:92dvh;overflow-y:auto;overscroll-behavior:contain}
+.mclose{position:absolute;top:10px;inset-inline-end:10px;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:var(--deep);z-index:2}
+.mclose:hover{background:rgba(var(--deep-rgb),.08)}
+.mcard .f-title{padding-inline-end:40px}
+dialog.lb{width:100%;height:100%;max-height:100%;margin:0;background:rgba(var(--deep-rgb),.97)}
+dialog.lb[open]{display:flex;align-items:center;justify-content:center}
+.lb img{max-width:calc(100% - 32px);max-height:calc(100% - 150px);object-fit:contain;border-radius:18px;border-end-start-radius:4px}
+.lb .mclose{color:var(--sand);top:16px;inset-inline-end:16px}
+.lb .car-nav{display:grid}
+.lb-count{position:absolute;bottom:24px;inset-inline:0;text-align:center;color:rgba(var(--sand-rgb),.8);font:500 .8rem var(--f-b);letter-spacing:.2em}
+.privacy .mcard{padding:34px 26px}
+.privacy h2{font:500 1.7rem var(--f-d);color:var(--deep);margin-bottom:18px;padding-inline-end:40px}
+.privacy p+p{margin-top:12px}
+
+/* ═══ REVEAL ═══ */
+.js .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.js .reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js .reveal{transform:none;transition:opacity .6s ease-out}
+  .hero-bg img{animation:none}
+  .mq-track{animation:none}.mq{overflow-x:auto}
+  .card:hover{transform:none}.about-media:hover img,.car:hover .car-slide img{transform:none}
+  .menu nav a{transform:none}
+}
+/* ═══ TABEEBY ADDITIONS (same design language as the base above) ═══ */
+:root{--f-d:'Cairo',Tahoma,sans-serif;--f-b:'Cairo',Tahoma,sans-serif;--wa:#25D366}
+body{font-weight:400}
+.h2,.h1{font-weight:700}
+.h2 em{font-style:normal;font-weight:400}
+.brand-logo{height:50px;width:auto}
+@media(min-width:768px){.brand-logo{height:58px}}
+.u{text-decoration:underline;text-underline-offset:3px;color:var(--deep);font-weight:600}
+
+/* hero without a photo: brand gradient + contour lines + logo watermark */
+.hero-bg.noimg{background:radial-gradient(120% 90% at 85% 10%,rgba(var(--accent-rgb),.28),transparent 55%),radial-gradient(90% 80% at 0% 100%,rgba(var(--accent-rgb),.16),transparent 60%),var(--deep) var(--topo-dark);background-size:auto,auto,520px}
+.hero-bg.noimg::after{display:none}
+.hero-bg.noimg::before{content:"";position:absolute;inset-block-start:16%;inset-inline-start:-6%;width:min(58vw,720px);aspect-ratio:667/481;background:url(img/logo-white.png) center/contain no-repeat;opacity:.06;transform:rotate(-8deg)}
+@media(min-width:1024px){.hero-bg.noimg::before{inset-inline-start:auto;inset-inline-end:38%}}
+
+/* about image (portrait posts) */
+.about-media{aspect-ratio:4/5;max-width:520px;justify-self:center;width:100%;background:var(--sand-soft)}
+.about-media img{object-fit:cover}
+
+/* departments: visual block when no photo is set */
+.dept-media{aspect-ratio:4/3}
+.dept-art{background:radial-gradient(90% 90% at 80% 15%,rgba(var(--accent-rgb),.35),transparent 60%),var(--deep) var(--topo-dark);background-size:auto,460px;display:grid;place-items:center;color:var(--sand)}
+.dept-icon svg.i{width:clamp(96px,14vw,150px);height:auto;stroke-width:.9;color:var(--accent)}
+.dept-n{position:absolute;top:18px;inset-inline-start:22px;font:500 3.6rem/1 var(--f-d);color:rgba(var(--sand-rgb),.16)}
+.dept-docs{position:absolute;bottom:18px;inset-inline-end:18px;display:flex}
+.dept-docs .doc-ph{width:46px;height:46px;border-radius:50%;border:2px solid var(--deep);margin-inline-start:-10px;font-size:.85rem}
+.about-lists.one{grid-template-columns:1fr;margin-top:22px}
+.ticks.cols{grid-template-columns:1fr}
+@media(min-width:560px){.ticks.cols{grid-template-columns:1fr 1fr;gap:8px 18px}}
+
+/* treatments on dark */
+.chips-dark .chip{color:var(--sand);border-color:rgba(var(--sand-rgb),.3)}
+.chips-dark .chip[aria-pressed=true],.chips-dark .chip:hover{background:var(--sand);color:var(--deep);border-color:var(--sand)}
+.cards{grid-auto-rows:1fr}
+@media(min-width:1180px){.cards{grid-template-columns:repeat(3,1fr)}}
+.card{display:flex;flex-direction:column}
+.card-top svg.i{width:30px;height:30px}
+.card-dept{font:600 .7rem var(--f-b);letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:-18px 0 8px}
+[dir=rtl] .card-dept{font-size:.85rem}
+.card-link{margin-top:auto;padding-top:20px;display:inline-flex;align-items:center;gap:8px;min-height:44px;font:600 .74rem var(--f-b);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+[dir=rtl] .card-link{font-size:.92rem}
+.card-link svg.i{width:18px;height:18px;transition:transform .25s}
+.card-link:hover svg.i{transform:translateX(4px)}
+[dir=rtl] .card-link:hover svg.i{transform:scaleX(-1) translateX(4px)}
+
+/* doctors */
+.docs{display:grid;gap:22px}
+@media(min-width:620px){.docs{grid-template-columns:1fr 1fr}}
+@media(min-width:1024px){.docs{grid-template-columns:repeat(3,1fr)}}
+.doc{background:var(--sand-soft);border:1px solid rgba(var(--ink-rgb),.1);overflow:hidden;display:flex;flex-direction:column;transition:transform .3s ease-out,box-shadow .3s ease-out}
+.doc:hover{transform:translateY(-4px);box-shadow:0 24px 60px rgba(var(--deep-rgb),.12)}
+.doc-ph{position:relative;aspect-ratio:6/5;background:var(--deep);overflow:hidden;flex:none}
+.doc-ph img{width:100%;height:100%;object-fit:cover;object-position:top}
+.doc-ph.noimg{background:radial-gradient(90% 90% at 80% 10%,rgba(var(--accent-rgb),.45),transparent 60%),linear-gradient(160deg,var(--deep-soft),var(--deep));display:grid;place-items:center}
+.doc-ph.noimg::after{content:attr(data-ini);font:600 clamp(2.4rem,6vw,3.6rem)/1 'Cairo',sans-serif;letter-spacing:.06em;color:var(--sand);opacity:.92}
+.doc-ph.noimg::before{content:"";position:absolute;inset:auto 0 0;height:40%;background:var(--topo-dark);background-size:300px;opacity:.7}
+.doc-ph.sm.noimg::after,.doc-ph.xs.noimg::after{font-size:.85rem}
+.doc-ph.sm.noimg::before,.doc-ph.xs.noimg::before{display:none}
+.doc-ph.sm,.doc-ph.xs{aspect-ratio:1}
+.doc-body{padding:24px 24px 26px;display:flex;flex-direction:column;flex:1}
+.doc h3{font-size:1.35rem;line-height:1.25;color:var(--deep);margin:14px 0 4px}
+.doc .dev{font:500 .74rem var(--f-b);letter-spacing:.14em;text-transform:uppercase;color:rgba(var(--ink-rgb),.72)}
+[dir=rtl] .doc .dev{font-size:.95rem}
+.doc-bio{font-size:.93rem;margin-top:12px}
+.doc-lang{display:flex;gap:8px;align-items:center;font-size:.88rem;margin-top:10px;color:rgba(var(--ink-rgb),.8)}
+.doc-lang svg.i{width:18px;height:18px;color:var(--deep)}
+.doc .btn{margin-top:auto}
+.doc-body>.dev{margin-bottom:22px}
+
+/* features strip under "how booking works" */
+#features{margin-top:64px}
+#features .feat-t{font-size:clamp(1.05rem,1.8vw,1.25rem);line-height:1.3}
+#features li>span:not(.badge){max-width:30ch}
+
+/* booking */
+.book{overflow:visible;background:radial-gradient(80% 60% at 100% 0%,rgba(var(--accent-rgb),.18),transparent 60%),var(--deep)}
+.book-wrap{max-width:980px;margin:44px auto 0}
+.book-pick{display:grid;gap:0 14px}
+@media(min-width:640px){.book-pick{grid-template-columns:1fr 1fr}}
+.book-card{padding:20px 14px;margin-top:6px}
+@media(min-width:640px){.book-card{padding:26px 28px}}
+.book-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgba(var(--ink-rgb),.12)}
+.doc-mini{display:flex;align-items:center;gap:14px}
+.doc-mini .doc-ph{width:56px;height:56px;border-radius:50%}
+.doc-mini b{display:block;font:700 1.08rem/1.3 var(--f-d);color:var(--deep)}
+.doc-mini small{display:block;font-size:.85rem;color:rgba(var(--ink-rgb),.72)}
+.book-frame{position:relative;height:720px;border-radius:14px;overflow:hidden;background:#fff}
+.book-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.book .f-sub{border:0;padding:0;margin:0 0 16px}
+.book .fcard .fld>span{color:rgba(var(--ink-rgb),.78)}
+.book .fcard .inp{background:var(--sand-soft);border-color:rgba(var(--ink-rgb),.22);color:var(--ink)}
+.book .fcard .f-err{color:#9B3B2E;text-align:start}
+.book .fcard .sent h3{color:var(--deep)}
+.book .fcard .link{color:var(--deep);border-color:rgba(var(--deep-rgb),.3)}
+
+/* WhatsApp floating button: always visible */
+.wa-fab{opacity:1!important;transform:none!important;pointer-events:auto!important;background:var(--wa)!important;color:#fff!important;box-shadow:0 14px 34px rgba(0,0,0,.22)}
+.wa-fab svg{width:32px;height:32px}
+.wa-fab::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--wa);animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{from{transform:scale(1);opacity:.7}to{transform:scale(1.5);opacity:0}}
+.menu-open .wa-fab{opacity:0!important;pointer-events:none!important}
+@media(prefers-reduced-motion:reduce){.wa-fab::after{animation:none}}
+.foot{padding-bottom:120px}
+.doc-ph.noimg::after{position:relative;inset:auto;margin:0;width:auto;height:auto;background:none;-webkit-mask:none;mask:none;z-index:1}
+@media(max-width:619px){.doc-ph:not(.sm):not(.xs){aspect-ratio:16/9}}
+
+/* ═══ two-colour scheme: teal main (--deep) + logo navy secondary (--ink) ═══ */
+.light .h2,.light2 .h2,.how-detail h3,.proj h3,.doc h3,.faq-q,.doc-mini b,.f-title,.specs-strip b{color:var(--ink)}
+.light .h2 em,.light2 .h2 em{color:var(--deep)}
+.navy{background:var(--ink)}
+.navy .card{background:linear-gradient(180deg,rgba(var(--sand-rgb),.08),rgba(var(--sand-rgb),.02));border-color:rgba(var(--accent-rgb),.18)}
+.book.navy{background:radial-gradient(80% 60% at 100% 0%,rgba(var(--deep-rgb),.45),transparent 60%),var(--ink)}
+.navy .chip[aria-pressed=true],.navy .chip:hover{color:var(--ink)}
+.hero{background:var(--ink)}
+.hero-bg.noimg{background:radial-gradient(120% 90% at 85% 10%,rgba(var(--deep-rgb),.95),transparent 60%),radial-gradient(90% 80% at 0% 100%,rgba(var(--deep-rgb),.7),transparent 60%),var(--ink) var(--topo-dark);background-size:auto,auto,520px}
+.hero-bg::after{background:linear-gradient(to bottom,rgba(var(--ink-rgb),.55),rgba(var(--deep-rgb),.35) 42%,rgba(var(--ink-rgb),.85))}
+.dept-art{background:radial-gradient(90% 90% at 80% 15%,rgba(var(--accent-rgb),.25),transparent 60%),var(--deep) var(--topo-dark)}
+.doc-ph.noimg{background:radial-gradient(90% 90% at 80% 10%,rgba(var(--deep-rgb),.9),transparent 65%),linear-gradient(160deg,var(--ink),var(--ink))}
+.doc-ph{background:#eef3f4}
+.type-chip{background:rgba(var(--deep-rgb),.1);color:var(--deep);font-weight:600}
+.about-grid.solo{grid-template-columns:1fr;max-width:820px;margin-inline:auto;text-align:center}
+.about-grid.solo .about-body{margin-inline:auto}
+.about-grid.solo .btns{justify-content:center}
+.about-grid.solo .eyebrow{justify-content:center}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.5c.7 5 4.5 8.8 9.5 9.5-5 .7-8.8 4.5-9.5 9.5-.7-5-4.5-8.8-9.5-9.5 5-.7 8.8-4.5 9.5-9.5z"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M3.6 20.4l1.2-4.1A8.6 8.6 0 1 1 8 19.3z"/><path d="M9.2 7.9c-.4 0-.9.4-.9 1.2 0 2.6 3.4 6.4 6.6 6.4.9 0 1.3-.6 1.3-1l-.1-.4-1.9-.9-.8.9c-1.2-.4-2.4-1.6-2.9-2.8l.9-.8-.8-1.9z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 3.5h3.2l1.6 4.2-2.1 1.3a11.5 11.5 0 0 0 7.3 7.3l1.3-2.1 4.2 1.6V19a2 2 0 0 1-2 2A16.5 16.5 0 0 1 3 5.5a2 2 0 0 1 2-2z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></symbol>
+  <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></symbol>
+  <symbol id="i-fb" viewBox="0 0 24 24"><path d="M14.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.6-1.5h1.5V4.4a19 19 0 0 0-2.3-.1c-2.3 0-3.9 1.4-3.9 4v2.2H8.8v3h2.6V21"/></symbol>
+  <symbol id="i-msgr" viewBox="0 0 24 24"><path d="M12 3C7 3 3 6.7 3 11.4c0 2.6 1.2 4.9 3.2 6.4V21l3-1.6c.9.2 1.8.4 2.8.4 5 0 9-3.7 9-8.4S17 3 12 3z"/><path d="M7.5 13.5l3-3.2 2.2 2 3.8-2.8-3 3.2-2.2-2z"/></symbol>
+  <symbol id="i-tiktok" viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3c.4 2.6 2.2 4.4 5 4.6"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4.5 12h15M13.5 6l6 6-6 6"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5 10-11"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5h16v11H9.5L5 20v-3.5H4z"/><path d="M8 10h8M8 13h5"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4M8 13.5h2M12 13.5h2M16 13.5h.1M8 17h2M12 17h2"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/></symbol>
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M7.5 3.5c-2.6 0-4 2-4 4.6 0 2.4 1 3.6 1.6 5.6.8 2.7 1 7 3 7 1.7 0 1.6-4.6 3.9-4.6s2.2 4.6 3.9 4.6c2 0 2.2-4.3 3-7 .6-2 1.6-3.2 1.6-5.6 0-2.6-1.4-4.6-4-4.6-1.8 0-2.6 1-4.5 1s-2.7-1-4.5-1z"/></symbol>
+  <symbol id="i-child" viewBox="0 0 24 24"><circle cx="12" cy="6" r="2.6"/><path d="M8 21v-5.5L6 11.5l3-2h6l3 2-2 4V21M12 15.5V21"/></symbol>
+  <symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14c1 1.6 2.4 2.4 4 2.4s3-.8 4-2.4M9 9.5v.1M15 9.5v.1"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path d="M4 18.5h16M5 15.5l-1.5-9 5 4 3.5-6 3.5 6 5-4-1.5 9z"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M10 3.5c.5 3.6 2.9 6 6.5 6.5-3.6.5-6 2.9-6.5 6.5-.5-3.6-2.9-6-6.5-6.5 3.6-.5 6-2.9 6.5-6.5zM18 14.5c.3 1.9 1.1 2.7 3 3-1.9.3-2.7 1.1-3 3-.3-1.9-1.1-2.7-3-3 1.9-.3 2.7-1.1 3-3z"/></symbol>
+  <symbol id="i-skin" viewBox="0 0 24 24"><path d="M12 3.5c-4.4 0-7.5 3.4-7.5 8.2 0 5 3.4 8.8 7.5 8.8s7.5-3.8 7.5-8.8c0-4.8-3.1-8.2-7.5-8.2z"/><path d="M9 10v.1M15 10v.1M9.5 15c1.5 1 3.5 1 5 0"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5s-6 6.6-6 11a6 6 0 0 0 12 0c0-4.4-6-11-6-11z"/><path d="M9.5 15a2.5 2.5 0 0 0 2.5 2.5"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7.5 3v5.5c0 4.5-3.2 8.2-7.5 9.5-4.3-1.3-7.5-5-7.5-9.5V6z"/><path d="M8.8 12l2.3 2.3 4.2-4.6"/></symbol>
+  <symbol id="i-hair" viewBox="0 0 24 24"><path d="M5 20c0-6 0-9 2-12s4-4.5 7-4.5c3.5 0 6 2.5 6 6.5v10M9 20v-8M13 20v-9M16.5 20v-8"/></symbol>
+  <symbol id="i-face" viewBox="0 0 24 24"><path d="M12 3c-4 0-7 3-7 7.5 0 3 1 5.5 3 7.4 1.2 1.1 2.5 3.1 4 3.1s2.8-2 4-3.1c2-1.9 3-4.4 3-7.4C19 6 16 3 12 3z"/><path d="M9 10.5v.1M15 10.5v.1M10 15h4M17 6.5l2-2"/></symbol>
+  <symbol id="i-steth" viewBox="0 0 24 24"><path d="M5.5 3.5v5a4.5 4.5 0 0 0 9 0v-5M10 13v2.5a5 5 0 0 0 10 0V13"/><circle cx="20" cy="11" r="2"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-8-4.7-8-10.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5C20 15.3 12 20 12 20z"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 3.5H6.5v17h11v-13zM14 3.5v4h3.5M9 12h6M9 15.5h6"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M13.5 4.5h6v6M19.5 4.5l-9 9M18 14v5.5H4.5V6H10"/></symbol>
+</svg>
+
+<a class="skip" href="#main" data-i18n>Skip to content</a>
+
+<!-- ═══ HEADER ═══ -->
+<header class="hdr" id="hdr">
+  <div class="wrap hdr-in">
+    <a class="brand" href="#top" aria-label="Tabeeby Medical Center — home" data-i18n-aria>
+      <img class="brand-logo" src="img/logo-white.png" alt="" width="667" height="481">
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#departments" data-i18n>Departments</a>
+      <a href="#treatments" data-i18n>Treatments</a>
+      <a href="#doctors" data-i18n>Doctors</a>
+      <a href="#faq" data-i18n>FAQ</a>
+      <a href="#contact" data-i18n>Contact</a>
+    </nav>
+    <div class="hdr-end">
+      <button class="lang" type="button" data-lang-toggle aria-label="Switch language" data-i18n-aria></button>
+      <a class="btn btn-sand btn-sm hdr-cta" href="#book" data-book><svg class="i"><use href="#i-cal"/></svg><span data-i18n>Book appointment</span></a>
+      <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <nav aria-label="Mobile">
+    <a href="#departments" data-i18n>Departments</a>
+    <a href="#treatments" data-i18n>Treatments</a>
+    <a href="#doctors" data-i18n>Doctors</a>
+    <a href="#book" data-i18n>Book appointment</a>
+    <a href="#faq" data-i18n>FAQ</a>
+    <a href="#contact" data-i18n>Contact</a>
+  </nav>
+  <div class="m-contact">
+    <p class="eyebrow" data-i18n>Talk to us</p>
+    <a class="btn btn-sand" href="#" data-tel><svg class="i"><use href="#i-phone"/></svg><span data-i18n>Call us</span></a>
+    <a class="btn btn-ghost" href="#" data-wa><svg class="i"><use href="#i-wa"/></svg><span data-i18n>WhatsApp us</span></a>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="top" data-tone="dark">
+  <div class="hero-bg media"><img id="heroImg" alt="" width="1920" height="1080" fetchpriority="high"></div>
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <p class="hero-eyebrow" data-s="HERO_EYEBROW"></p>
+      <h1 class="h1" data-s="HERO_TITLE"></h1>
+      <p class="hero-sub" data-s="HERO_SUB"></p>
+      <div class="hero-ctas">
+        <a class="btn btn-sand" href="#book" data-book><span data-i18n>Book appointment</span><svg class="i flip" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-ghost" href="#" data-wa><svg class="i"><use href="#i-wa"/></svg><span data-i18n>WhatsApp us</span></a>
+      </div>
+      <ul class="hero-stats" id="heroStats"></ul>
+    </div>
+    <div class="hero-form">
+      <div class="fcard r-a">
+        <form id="quickBook" novalidate>
+          <h2 class="f-title" data-i18n>Book your appointment</h2>
+          <p class="f-sub" data-i18n>Choose the department and doctor to see free times.</p>
+          <label class="fld"><span data-i18n>Department</span><select class="inp" name="dept" data-dept-select></select></label>
+          <label class="fld"><span data-i18n>Doctor</span><select class="inp" name="doc" data-doc-select></select></label>
+          <button class="btn btn-deep btn-block" type="submit"><svg class="i"><use href="#i-cal"/></svg><span data-i18n>See available times</span></button>
+          <p class="f-note"><span data-i18n>Prefer to talk?</span> <a href="#" data-wa class="u" data-i18n>Message us on WhatsApp</a></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TRUST STRIP ═══ -->
+<section class="dark trust" aria-label="Why patients choose us" data-i18n-aria data-tone="dark">
+  <div class="wrap">
+    <ul class="stagger">
+      <li class="reveal"><svg class="i"><use href="#i-cal"/></svg><span data-i18n>Live online booking</span></li>
+      <li class="reveal"><svg class="i"><use href="#i-tooth"/></svg><span data-i18n>Dental care for kids and adults</span></li>
+      <li class="reveal"><svg class="i"><use href="#i-sparkle"/></svg><span data-i18n>Dermatology and cosmetology</span></li>
+      <li class="reveal"><svg class="i"><use href="#i-pin"/></svg><span data-s="AREA"></span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section class="sec light topo about" id="about" data-tone="light">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="reveal">
+        <p class="eyebrow"><svg class="i"><use href="#i-star"/></svg><span data-i18n>About us</span></p>
+        <h2 class="h2"><em data-i18n>About</em><span data-s="ABOUT_TITLE"></span></h2>
+        <div class="about-body" id="aboutBody"></div>
+        <div class="btns">
+          <a class="btn btn-deep" href="#book" data-book><svg class="i"><use href="#i-cal"/></svg><span data-i18n>Book appointment</span></a>
+          <a class="btn btn-line" href="#doctors" data-i18n>Meet our doctors</a>
+        </div>
+      </div>
+      <figure class="media about-media r-img reveal"><img id="aboutImg" alt="" width="800" height="1060" loading="lazy"></figure>
+    </div>
+    <ul class="specs-strip stagger" id="aboutSpecs"></ul>
+  </div>
+</section>
+
+<!-- ═══ SERVICES MARQUEE ═══ -->
+<section class="dark marquee" aria-label="Our treatments" data-i18n-aria data-tone="dark">
+  <p class="eyebrow"><span data-i18n>Our treatments</span></p>
+  <div class="mq"><div class="mq-track" id="mqTrack"></div></div>
+</section>
+
+<!-- ═══ DEPARTMENTS ═══ -->
+<section class="sec light2 topo" id="departments" data-tone="light">
+  <div class="wrap">
+    <div class="sh reveal">
+      <p class="eyebrow"><svg class="i"><use href="#i-star"/></svg><span data-i18n>Departments</span></p>
+      <h2 class="h2" data-i18n><em>Our</em> Departments</h2>
+      <p data-i18n>Choose a department to see its treatments and doctors, then book the time that suits you.</p>
+    </div>
+    <div id="deptList"></div>
+  </div>
+</section>
+
+<!-- ═══ TREATMENTS ═══ -->
+<section class="sec dark navy" id="treatments" data-tone="dark">
+  <div class="wrap">
+    <div class="sh reveal">
+      <p class="eyebrow"><svg class="i"><use href="#i-star"/></svg><span data-i18n>Treatments</span></p>
+      <h2 class="h2" data-i18n><em>What</em> We Treat</h2>
+      <p data-i18n>From a child's first dental visit to veneers, whitening and skin treatments.</p>
+      <span class="rule"></span>
+    </div>
+    <div class="chips chips-dark" id="treatChips" role="toolbar" aria-label="Filter by department" data-i18n-aria></div>
+    <div class="cards stagger" id="treatList"></div>
+  </div>
+</section>
+
+<!-- ═══ DOCTORS ═══ -->
+<section class="sec light topo" id="doctors" data-tone="light">
+  <div class="wrap">
+    <div class="sh reveal">
+      <p class="eyebrow"><svg class="i"><use href="#i-star"/></svg><span data-i18n>Our team</span></p>
+      <h2 class="h2" data-i18n><em>Meet</em> Our Doctors</h2>
+      <p data-i18n>Pick the doctor you prefer and see their free times straight away.</p>
+    </div>
+    <div class="chips" id="docChips" role="toolbar" aria-label="Filter by department" data-i18n-aria></div>
+    <div class="docs" id="docList"></div>
+  </div>
+</section>
+
+<!-- ═══ HOW BOOKING WORKS ═══ -->
+<section class="sec light2" id="process" data-tone="light">
+  <div class="wrap">
+    <div class="sh reveal">
+      <p class="eyebrow"><svg class="i"><use href="#i-star"/></svg><span data-i18n>How booking works</span></p>
+      <h2 class="h2" data-i18n><em>Your</em> Visit in Four Steps</h2>
+      <p data-i18n>No calls, no waiting on hold. You see the real free times.</p>
+    </div>
+    <div class="how reveal">
+      <div class="how-panel r-a">
+        <span class="how-ghost" aria-hidden="true">04</span>
+        <svg class="i"><use href="#i-star"/></svg>
+        <ul class="steps" role="tablist" aria-label="Steps" data-i18n-aria>
+          <li><button class="step" type="button" role="tab" aria-selected="true" aria-controls="howDetail"><span>01</span><b data-i18n>Choose the department</b></button></li>
+          <li><button class="step" type="button" role="tab" aria-selected="false" aria-controls="howDetail" tabindex="-1"><span>02</span><b data-i18n>Choose your doctor</b></button></li>
+          <li><button class="step" type="button" role="tab" aria-selected="false" aria-controls="howDetail" tabindex="-1"><span>03</span><b data-i18n>Pick a free time</b></button></li>
+          <li><button class="step" type="button" role="tab" aria-selected="false" aria-controls="howDetail" tabindex="-1"><span>04</span><b data-i18n>Get your confirmation</b></button></li>
+        </ul>
+      </div>
+      <div class="how-detail r-b" id="howDetail" role="tabpanel" aria-live="polite">
+        <p class="num" id="howNum">01 / 04</p>
+        <h3 id="howTitle"></h3>
+        <p id="howText"></p>
+        <div class="btns"><a class="btn btn-deep" href="#book" data-book><svg class="i"><use href="#i-cal"/></svg><span data-i18n>Book now</span></a></div>
+      </div>
+    </div>
+    <div hidden id="howData">
+      <p data-i18n>Dental services or dermatology and cosmetology. Each department lists its treatments so you know you are in the right place.</p>
+      <p data-i18n>Every doctor has a short profile. Choose the one you prefer, or let us pick the first available doctor in the department.</p>
+      <p data-i18n>The calendar only shows times that are really free. Tap one and enter your name, phone and email.</p>
+      <p data-i18n>You receive a confirmation email with the date, time and a link to change or cancel. We will also be in touch on WhatsApp if needed.</p>
+    </div>
+    <ul class="specs-strip stagger" id="features"></ul>
+  </div>
+</section>
+
+<!-- ═══ BOOKING ═══ -->
+<section class="sec dark navy release book" id="book" data-tone="dark">
+  <div class="wrap">
+    <div class="sh reveal">
+      <p class="eyebrow"><svg class="i"><use href="#i-cal"/></svg><span data-i18n>Online booking</span></p>
+      <h2 class="h2" data-i18n><em>Book</em> Your Appointment</h2>
+      <p data-i18n>Choose a department and doctor, then pick any free time in the calendar.</p>
+    </div>
+    <div class="book-wrap reveal">
+      <form class="book-pick" id="bookPick" novalidate>
+        <label class="fld"><span data-i18n>Department</span><select class="inp" name="dept" data-dept-select></select></label>
+        <label class="fld"><span data-i18n>Doctor</span><select class="inp" name="doc" data-doc-select></select></label>
+      </form>
+      <div class="book-card fcard r-b" id="bookCard">
+        <div class="book-head">
+          <div class="doc-mini" id="bookWho"></div>
+          <a class="link" id="bookOpen" href="#" target="_blank" rel="noopener" hidden><span data-i18n>Open in a new tab</span><svg class="i"><use href="#i-ext"/></svg></a>
+        </div>
+        <div class="book-frame" id="bookFrame" hidden><iframe id="bookIframe" title="Available appointment times" data-i18n-title loading="lazy"></iframe></div>
+        <!-- shown until a Google Calendar booking link is added in content.xlsx -->
+        <form class="book-req" id="bookReq" novalidate hidden>
+          <p class="f-sub" data-i18n>Send your preferred time and we will confirm on WhatsApp.</p>
+          <div class="grid2">
+            <label class="fld"><span data-i18n>Full name</span><input class="inp" name="name" autocomplete="name" required></label>
+            <label class="fld"><span data-i18n>Phone number</span><input class="inp" name="phone" type="tel" autocomplete="tel" dir="ltr" required placeholder="05x xxx xxxx"></label>
+            <label class="fld"><span data-i18n>Preferred date</span><input class="inp" name="date" type="date" required></label>
+            <label class="fld"><span data-i18n>Preferred time</span><select class="inp" name="time"><option value="Morning" data-i18n>Morning</option><option value="Afternoon" data-i18n>Afternoon</option><option value="Evening" data-i18n>Evening</option></select></label>
+          </div>
+          <label class="fld"><span data-i18n>Notes (optional)</span><textarea class="inp" name="notes" rows="2"></textarea></label>
+          <p class="f-err" role="alert"></p>
+          <button class="btn btn-deep btn-block" type="submit"><svg class="i"><use href="#i-wa"/></svg><span data-i18n>Send booking request</span></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="sec light2" id="faq" data-tone="light">
+  <div class="wrap">
+    <div class="sh reveal">
+      <p class="eyebrow"><svg class="i"><use href="#i-star"/></svg><span data-i18n>Questions</span></p>
+      <h2 class="h2" data-i18n><em>Your</em> Questions, Answered</h2>
+    </div>
+    <div class="faq reveal" id="faqList"></div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section class="sec dark contact" id="contact" data-tone="dark">
+  <div class="wrap contact-grid">
+    <div>
+      <div class="sh reveal">
+        <p class="eyebrow"><svg class="i"><use href="#i-star"/></svg><span data-i18n>Contact</span></p>
+        <h2 class="h2" data-i18n><em>Visit</em> Tabeeby</h2>
+        <p data-i18n>Call, message us on WhatsApp or visit us in Al Majaz, Sharjah.</p>
+      </div>
+      <ul class="crow reveal" data-contact-rows></ul>
+      <div class="btns reveal">
+        <a class="btn btn-sand" href="#book" data-book><svg class="i"><use href="#i-cal"/></svg><span data-i18n>Book appointment</span></a>
+        <a class="btn btn-ghost" href="#" data-wa><svg class="i"><use href="#i-wa"/></svg><span data-i18n>WhatsApp us</span></a>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="map r-a"><iframe id="mapFrame" title="Tabeeby Medical Center on Google Maps" data-i18n-title loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+      <p class="map-link"><a class="link" id="mapLink" href="#" target="_blank" rel="noopener"><span data-i18n>Open in Google Maps</span><svg class="i flip"><use href="#i-arrow"/></svg></a></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="foot" data-tone="light">
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <a class="foot-logo" href="#top" aria-label="Tabeeby Medical Center — home" data-i18n-aria><img src="logo.png" alt="" width="667" height="481" data-logo></a>
+        <p class="tag" data-i18n>Dental, dermatology and cosmetology care in Al Majaz, Sharjah.</p>
+        <div class="social" data-social></div>
+      </div>
+      <div>
+        <h4 data-i18n>Contact</h4>
+        <ul class="crow" data-contact-rows></ul>
+      </div>
+      <div>
+        <h4 data-i18n>Explore</h4>
+        <ul class="foot-links">
+          <li><a href="#departments" data-i18n>Departments</a></li>
+          <li><a href="#treatments" data-i18n>Treatments</a></li>
+          <li><a href="#doctors" data-i18n>Doctors</a></li>
+          <li><a href="#book" data-i18n>Book appointment</a></li>
+          <li><a href="#faq" data-i18n>FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bar">
+      <span>© <span id="year"></span> <span data-s="NAME"></span>. <span data-i18n>All rights reserved.</span></span>
+      <nav aria-label="Language" data-i18n-aria>
+        <a href="?lang=ar" data-setlang="ar" lang="ar">العربية</a>
+        <a href="?lang=en" data-setlang="en" lang="en">English</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ FLOATING ═══ -->
+<aside class="rail" aria-label="Quick contact" data-i18n-aria>
+  <a href="#" data-wa><svg class="i"><use href="#i-wa"/></svg><span data-i18n>WhatsApp</span></a>
+  <a href="#" data-tel><svg class="i"><use href="#i-phone"/></svg><span data-i18n>Call</span></a>
+  <a href="#book" data-book><svg class="i"><use href="#i-cal"/></svg><span data-i18n>Book</span></a>
+</aside>
+<a class="fpill" id="fpill" href="#book" data-book><svg class="i"><use href="#i-cal"/></svg><span data-i18n>Book appointment</span></a>
+<a class="fab wa-fab" id="fab" href="#" data-wa aria-label="Chat on WhatsApp" data-i18n-aria><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3.2 29l6.9-1.9c1.9 1 4 1.6 6 1.6 7 0 12.7-5.7 12.7-12.6S23 3 16 3zm0 23.1c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.1 1.1-4-.3-.4a10.4 10.4 0 0 1-1.6-5.5C5.3 9.8 10.1 5.1 16 5.1s10.6 4.7 10.6 10.5S21.8 26.1 16 26.1zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.3.3-.6.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.6 5.8 5 .8.4 1.4.6 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg></a>
+
+<script src="content-fallback.js" defer></script>
+<script>
+/* ════════════════════════════════════════════════════════════════
+   I18N — fixed interface words. Key = the English text in the page.
+   النصوص الثابتة في الواجهة. عدّل الترجمة العربية فقط.
+   ════════════════════════════════════════════════════════════════ */
+const I18N = {
+  "Skip to content": "انتقل إلى المحتوى",
+  "Tabeeby Medical Center — home": "مركز طبيبي الطبي — الرئيسية",
+  "Departments": "الأقسام",
+  "Treatments": "العلاجات",
+  "Doctors": "الأطباء",
+  "FAQ": "الأسئلة الشائعة",
+  "Contact": "تواصل معنا",
+  "Switch language": "تغيير اللغة",
+  "Book appointment": "احجز موعداً",
+  "Open menu": "فتح القائمة",
+  "Close menu": "إغلاق القائمة",
+  "Talk to us": "تحدّث معنا",
+  "Call us": "اتصل بنا",
+  "WhatsApp us": "راسلنا واتساب",
+  "Book your appointment": "احجز موعدك",
+  "Choose the department and doctor to see free times.": "اختر القسم والطبيب لعرض الأوقات المتاحة.",
+  "Department": "القسم",
+  "Doctor": "الطبيب",
+  "Any available doctor": "أي طبيب متاح",
+  "See available times": "اعرض الأوقات المتاحة",
+  "Prefer to talk?": "تفضّل التحدث معنا؟",
+  "Message us on WhatsApp": "راسلنا على واتساب",
+  "Why patients choose us": "لماذا يختارنا المرضى",
+  "Live online booking": "حجز إلكتروني مباشر",
+  "Dental care for kids and adults": "علاج أسنان الأطفال والكبار",
+  "Dermatology and cosmetology": "الجلدية والتجميل",
+  "About us": "من نحن",
+  "About": "عن",
+  "Meet our doctors": "تعرّف على أطبائنا",
+  "Our treatments": "علاجاتنا",
+  "Choose a department to see its treatments and doctors, then book the time that suits you.": "اختر القسم لتتعرف على علاجاته وأطبائه، ثم احجز الوقت الذي يناسبك.",
+  "<em>Our</em> Departments": "<em>أقسامنا</em> الطبية",
+  "Treatments in this department": "علاجات هذا القسم",
+  "Book in {x}": "احجز في {x}",
+  "See the doctors": "اعرض الأطباء",
+  "Ask on WhatsApp": "اسأل عبر واتساب",
+  "{n} doctors": "{n} أطباء",
+  "1 doctor": "طبيب واحد",
+  "{n} treatments": "{n} علاجات",
+  "<em>What</em> We Treat": "<em>ماذا</em> نعالج",
+  "From a child's first dental visit to veneers, whitening and skin treatments.": "من أول زيارة أسنان للطفل إلى الفينير والتبييض وعلاجات البشرة.",
+  "Filter by department": "تصفية حسب القسم",
+  "All": "الكل",
+  "Book this treatment": "احجز هذا العلاج",
+  "Our team": "فريقنا",
+  "<em>Meet</em> Our Doctors": "<em>تعرّف</em> على أطبائنا",
+  "Pick the doctor you prefer and see their free times straight away.": "اختر الطبيب الذي تفضّله وشاهد أوقاته المتاحة فوراً.",
+  "Book with {x}": "احجز مع {x}",
+  "Book": "احجز",
+  "Languages": "اللغات",
+  "How booking works": "كيف يتم الحجز",
+  "<em>Your</em> Visit in Four Steps": "<em>زيارتك</em> في أربع خطوات",
+  "No calls, no waiting on hold. You see the real free times.": "بدون اتصالات أو انتظار. ترى الأوقات المتاحة فعلياً.",
+  "Steps": "الخطوات",
+  "Choose the department": "اختر القسم",
+  "Choose your doctor": "اختر طبيبك",
+  "Pick a free time": "اختر وقتاً متاحاً",
+  "Get your confirmation": "استلم التأكيد",
+  "Book now": "احجز الآن",
+  "Dental services or dermatology and cosmetology. Each department lists its treatments so you know you are in the right place.": "خدمات الأسنان أو الجلدية والتجميل. كل قسم يعرض علاجاته لتتأكد أنك في المكان الصحيح.",
+  "Every doctor has a short profile. Choose the one you prefer, or let us pick the first available doctor in the department.": "لكل طبيب نبذة قصيرة. اختر من تفضّل، أو دعنا نختار أول طبيب متاح في القسم.",
+  "The calendar only shows times that are really free. Tap one and enter your name, phone and email.": "يعرض التقويم الأوقات المتاحة فعلاً فقط. اختر وقتاً وأدخل اسمك ورقم هاتفك وبريدك.",
+  "You receive a confirmation email with the date, time and a link to change or cancel. We will also be in touch on WhatsApp if needed.": "تصلك رسالة تأكيد بالبريد فيها التاريخ والوقت ورابط للتعديل أو الإلغاء، وسنتواصل معك عبر واتساب عند الحاجة.",
+  "Online booking": "الحجز الإلكتروني",
+  "<em>Book</em> Your Appointment": "<em>احجز</em> موعدك",
+  "Choose a department and doctor, then pick any free time in the calendar.": "اختر القسم والطبيب، ثم اختر أي وقت متاح في التقويم.",
+  "Open in a new tab": "افتح في صفحة جديدة",
+  "Available appointment times": "مواعيد الحجز المتاحة",
+  "Send your preferred time and we will confirm on WhatsApp.": "أرسل الوقت المفضّل لديك وسنؤكد موعدك عبر واتساب.",
+  "Full name": "الاسم الكامل",
+  "Phone number": "رقم الهاتف",
+  "Preferred date": "التاريخ المفضّل",
+  "Preferred time": "الوقت المفضّل",
+  "Morning": "صباحاً",
+  "Afternoon": "بعد الظهر",
+  "Evening": "مساءً",
+  "Notes (optional)": "ملاحظات (اختياري)",
+  "Send booking request": "أرسل طلب الحجز",
+  "Please enter your name.": "يرجى إدخال اسمك.",
+  "Please enter a valid phone number.": "يرجى إدخال رقم هاتف صحيح.",
+  "Please choose a date.": "يرجى اختيار التاريخ.",
+  "Booking request": "طلب حجز موعد",
+  "Name": "الاسم",
+  "Phone": "الهاتف",
+  "Date": "التاريخ",
+  "Time": "الوقت",
+  "Notes": "ملاحظات",
+  "Thank you, {x}.": "شكراً لك، {x}.",
+  "Your request is ready in WhatsApp. Press send and we will confirm your appointment.": "طلبك جاهز في واتساب. اضغط إرسال وسنؤكد موعدك.",
+  "Book another": "حجز آخر",
+  "Questions": "أسئلة",
+  "<em>Your</em> Questions, Answered": "<em>إجابات</em> أسئلتك",
+  "<em>Visit</em> Tabeeby": "<em>زوروا</em> طبيبي",
+  "Call, message us on WhatsApp or visit us in Al Majaz, Sharjah.": "اتصل بنا أو راسلنا على واتساب أو زُرنا في المجاز بالشارقة.",
+  "Tabeeby Medical Center on Google Maps": "مركز طبيبي الطبي على خرائط جوجل",
+  "Open in Google Maps": "افتح في خرائط جوجل",
+  "Dental, dermatology and cosmetology care in Al Majaz, Sharjah.": "رعاية الأسنان والجلدية والتجميل في المجاز بالشارقة.",
+  "Explore": "تصفّح",
+  "All rights reserved.": "جميع الحقوق محفوظة.",
+  "Language": "اللغة",
+  "Quick contact": "تواصل سريع",
+  "WhatsApp": "واتساب",
+  "Call": "اتصال",
+  "Chat on WhatsApp": "تحدّث عبر واتساب",
+  "Email": "البريد الإلكتروني",
+  "Visit": "العنوان",
+  "Hours": "ساعات العمل",
+  "Departments_stat": "أقسام متخصصة",
+  "Doctors_stat": "أطباء وأخصائيات",
+  "Treatments_stat": "علاج وخدمة",
+  "Online": "أونلاين",
+  "Booking_stat": "حجز على مدار الساعة",
+  "Kids & adults": "للصغار والكبار",
+  "Dental care_stat": "رعاية الأسنان",
+  "Hello Tabeeby, I would like to book an appointment.": "مرحباً طبيبي، أرغب بحجز موعد.",
+  "Hello Tabeeby, I have a question about {x}.": "مرحباً طبيبي، لدي استفسار عن {x}."
+};
+const STAT_EN = { "Departments_stat": "Specialised departments", "Doctors_stat": "Doctors and specialists", "Treatments_stat": "Treatments and services", "Booking_stat": "Booking, day or night", "Dental care_stat": "Dental care" };
+
+(function(){
+"use strict";
+const C = window.CONFIG;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const LS_LANG = "tabeeby_lang";
+let L = "ar", D = null, S = {}, TF = "all", DF = "all";
+const SEL = { dept: "", doc: "" };
+
+function t(k, vars){ let s = L === "ar" ? (I18N[k] != null ? I18N[k] : k) : (STAT_EN[k] || k); if (vars) for (const v in vars) s = s.split("{" + v + "}").join(vars[v]); return s; }
+const ic = id => '<svg class="i" aria-hidden="true"><use href="#i-' + (id || "star") + '"/></svg>';
+const lv = (o, f) => { if (!o) return ""; const a = o[f + "_ar"], e = o[f + "_en"]; return String((L === "ar" ? (a || e) : (e || a)) || "").trim(); };
+const set = k => { const r = S[k]; if (!r) return ""; return String((L === "ar" ? (r.arabic || r.english) : (r.english || r.arabic)) || "").trim(); };
+const raw = k => S[k] ? String(S[k].english || "").trim() : "";
+const shown = r => !/^(no|false|0|لا|hide)$/i.test(String(r.show == null ? "yes" : r.show).trim());
+const byOrder = (a, b) => (Number(a.order) || 999) - (Number(b.order) || 999);
+
+/* ── load content.xlsx (falls back to content-fallback.js) ── */
+function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+/* any Google Sheets link → its .xlsx download link */
+function sheetXlsxUrl(u){
+  u = String(u || "").trim(); if (!u) return "";
+  let m = u.match(/docs\.google\.com\/spreadsheets\/d\/e\/([\w-]+)/);
+  if (m) return "https://docs.google.com/spreadsheets/d/e/" + m[1] + "/pub?output=xlsx";
+  m = u.match(/docs\.google\.com\/spreadsheets\/d\/([\w-]+)/);
+  if (m) return "https://docs.google.com/spreadsheets/d/" + m[1] + "/export?format=xlsx";
+  return u;
+}
+async function readXlsx(url){
+  if (!window.XLSX) await loadScript(C.XLSX_LIB);
+  const r = await fetch(url, { cache: "no-store" });
+  if (!r.ok) throw new Error(url + " → " + r.status);
+  const wb = window.XLSX.read(await r.arrayBuffer(), { type: "array" });
+  const out = {};
+  wb.SheetNames.forEach(n => { out[n] = window.XLSX.utils.sheet_to_json(wb.Sheets[n], { defval: "" }); });
+  if (!out.Settings) throw new Error(url + " has no Settings tab");
+  return out;
+}
+async function loadContent(){
+  const gs = sheetXlsxUrl(C.GOOGLE_SHEET_URL);
+  if (gs){
+    try { return await readXlsx(gs + (gs.includes("?") ? "&" : "?") + "t=" + Date.now()); }
+    catch (e) { console.warn("Google Sheet could not be loaded, trying content.xlsx", e); }
+  }
+  if (location.protocol !== "file:" && C.CONTENT_FILE){
+    try { return await readXlsx(C.CONTENT_FILE + "?v=" + Date.now()); }
+    catch (e) { console.warn("content.xlsx could not be loaded, using content-fallback.js", e); }
+  }
+  for (let i = 0; i < 40 && !window.CONTENT_FALLBACK; i++) await new Promise(r => setTimeout(r, 50));
+  return window.CONTENT_FALLBACK || {};
+}
+function prepare(d){
+  const clean = a => (a || []).map(r => { const o = {}; for (const k in r) o[String(k).trim()] = typeof r[k] === "string" ? r[k].trim() : r[k]; return o; });
+  S = {}; clean(d.Settings).forEach(r => { if (r.key) S[String(r.key).trim().toUpperCase()] = r; });
+  const depts = clean(d.Departments).filter(r => r.id && shown(r)).sort(byOrder);
+  const ids = new Set(depts.map(x => String(x.id)));
+  return {
+    depts: depts,
+    docs: clean(d.Doctors).filter(r => (r.name_en || r.name_ar) && shown(r) && ids.has(String(r.department))).sort(byOrder),
+    services: clean(d.Services).filter(r => (r.name_en || r.name_ar) && shown(r)).sort(byOrder),
+    features: clean(d.Features).filter(r => (r.title_en || r.title_ar) && shown(r)),
+    faq: clean(d.FAQ).filter(r => (r.question_en || r.question_ar) && shown(r))
+  };
+}
+const dept = id => D.depts.find(x => String(x.id) === String(id));
+const doc = id => D.docs.find(x => String(x.id) === String(id));
+const docsIn = id => D.docs.filter(x => !id || id === "all" || String(x.department) === String(id));
+const servIn = id => D.services.filter(x => !id || id === "all" || String(x.department) === String(id));
+
+/* ── colours from the Settings tab ── */
+function hexRgb(h){ h = String(h).replace("#",""); if (h.length === 3) h = h.split("").map(c => c + c).join(""); const n = parseInt(h, 16); return [(n>>16)&255,(n>>8)&255,n&255].join(","); }
+function applyColors(){
+  const g = (k, d) => /^#[0-9a-f]{3,6}$/i.test(raw(k)) ? raw(k) : d;
+  const c = { deep: g("COLOR_DEEP", "#039690"), deepSoft: g("COLOR_DEEP_SOFT", "#027C77"), sand: g("COLOR_LIGHT", "#EAF4F3"), sandSoft: g("COLOR_LIGHT_SOFT", "#F6FBFA"), accent: g("COLOR_ACCENT", "#BDF3E3"), ink: g("COLOR_INK", "#2A428A") };
+  const r = document.documentElement.style;
+  [["--deep",c.deep],["--deep-soft",c.deepSoft],["--sand",c.sand],["--sand-soft",c.sandSoft],["--accent",c.accent],["--ink",c.ink]].forEach(x => r.setProperty(x[0], x[1]));
+  r.setProperty("--deep-rgb", hexRgb(c.deep)); r.setProperty("--sand-rgb", hexRgb(c.sand)); r.setProperty("--ink-rgb", hexRgb(c.ink)); r.setProperty("--accent-rgb", hexRgb(c.accent));
+  const topo = (col, op) => "url(\"data:image/svg+xml," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='640' height='640' viewBox='0 0 640 640'><g fill='none' stroke='" + col + "' stroke-opacity='" + op + "'><path d='M-40 90c90-50 170 30 260-10s150-80 250-20 120 40 210 0'/><path d='M-40 130c90-45 165 35 255-5s160-85 255-20 115 45 210 5'/><path d='M-40 175c95-40 160 40 250 0s170-90 260-25 110 50 210 10'/><path d='M-40 320c70 40 150-40 240 0s140 90 240 40 150-60 240-20'/><path d='M-40 365c75 35 150-35 240 5s145 85 240 35 150-55 240-15'/><path d='M-40 410c80 30 150-30 240 10s150 80 240 30 150-50 240-10'/><path d='M-40 560c100-40 180 30 270-5s150-70 250-15 120 35 200 5'/><path d='M-40 600c100-35 175 35 265 0s155-70 255-10 120 40 200 10'/><ellipse cx='470' cy='250' rx='60' ry='26'/><ellipse cx='470' cy='250' rx='100' ry='46'/><ellipse cx='140' cy='480' rx='44' ry='18'/><ellipse cx='140' cy='480' rx='80' ry='36'/></g></svg>") + "\")";
+  r.setProperty("--topo", topo(c.deep, .07));
+  r.setProperty("--topo-dark", topo(c.accent, .16));
+  r.setProperty("--star", "url(\"data:image/svg+xml," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2.5c.7 5 4.5 8.8 9.5 9.5-5 .7-8.8 4.5-9.5 9.5-.7-5-4.5-8.8-9.5-9.5 5-.7 8.8-4.5 9.5-9.5z'/></svg>") + "\")");
+  const tc = $('meta[name="theme-color"]'); if (tc) tc.content = c.deep;
+}
+
+/* ── language ── */
+function detectLang(){
+  const q = (new URLSearchParams(location.search).get("lang") || "").toLowerCase();
+  if (q === "ar" || q === "en") return q;
+  try { const s = localStorage.getItem(LS_LANG); if (s === "ar" || s === "en") return s; } catch (e) {}
+  return C.DEFAULT_LANG || "ar";
+}
+const TITLES = { ar: document.title, en: "Tabeeby Medical Center | Dental, Dermatology & Cosmetology in Al Majaz, Sharjah" };
+function applyI18n(){
+  $$("[data-i18n]").forEach(el => {
+    if (el.dataset.en === undefined) el.dataset.en = el.innerHTML.trim().replace(/\s+/g, " ");
+    const k = el.dataset.en; el.innerHTML = (L === "ar" && I18N[k] != null) ? I18N[k] : k;
+  });
+  $$("[data-i18n-aria]").forEach(el => { if (el.dataset.enAria === undefined) el.dataset.enAria = el.getAttribute("aria-label") || ""; el.setAttribute("aria-label", t(el.dataset.enAria)); });
+  $$("[data-i18n-title]").forEach(el => { if (el.dataset.enTitle === undefined) el.dataset.enTitle = el.getAttribute("title") || ""; el.setAttribute("title", t(el.dataset.enTitle)); });
+}
+function setLang(l, persist){
+  L = l === "en" ? "en" : "ar";
+  const h = document.documentElement; h.lang = L; h.dir = L === "ar" ? "rtl" : "ltr";
+  applyI18n();
+  document.title = TITLES[L];
+  $$("[data-lang-toggle]").forEach(b => { b.textContent = L === "ar" ? "EN" : "عربي"; b.setAttribute("lang", L === "ar" ? "en" : "ar"); });
+  const mf = $("#mapFrame"); if (mf) mf.src = "https://www.google.com/maps?q=" + encodeURIComponent(raw("MAP_QUERY") || set("ADDRESS")) + "&output=embed&hl=" + L;
+  renderAll();
+  if (persist){
+    try { localStorage.setItem(LS_LANG, L); } catch (e) {}
+    try { const u = new URL(location.href); u.searchParams.set("lang", L); history.replaceState(null, "", u.pathname + u.search + u.hash); } catch (e) {}
+  }
+}
+
+/* ── images ── */
+function setImg(img, src, alt){
+  if (!img) return;
+  const box = img.closest(".media"); if (box) box.classList.remove("noimg");
+  img.style.visibility = ""; delete img.dataset.failed; img.alt = alt || "";
+  if (src){ if (img.getAttribute("src") !== src) img.src = src; }
+  else { img.removeAttribute("src"); if (box) box.classList.add("noimg"); img.style.visibility = "hidden"; }
+}
+document.addEventListener("error", e => {
+  const el = e.target; if (!el || el.tagName !== "IMG" || el.dataset.failed) return;
+  el.dataset.failed = "1"; el.style.visibility = "hidden";
+  const box = el.closest(".media, .doc-ph"); if (box) box.classList.add("noimg");
+}, true);
+const initials = d => String(d.name_en || d.name_ar || "").replace(/^(dr\.?|د\.)\s*/i, "").split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+function docPhoto(d, cls){
+  return '<div class="doc-ph ' + (cls || "") + (d.photo ? "" : " noimg") + '" data-ini="' + esc(initials(d)) + '">' + (d.photo ? '<img src="' + esc(d.photo) + '" alt="' + esc(lv(d, "name")) + '" loading="lazy" width="600" height="700">' : "") + "</div>";
+}
+
+/* ── contact, WhatsApp, map ── */
+const telOf = p => { const d = String(p).replace(/\D/g, ""); return "tel:+" + (/^00/.test(d) ? d.slice(2) : /^0/.test(d) ? "971" + d.slice(1) : d); };
+const waNum = () => String(raw("WHATSAPP")).replace(/\D/g, "");
+const waLink = msg => "https://wa.me/" + waNum() + (msg ? "?text=" + encodeURIComponent(msg) : "");
+const waGeneral = () => t("Hello Tabeeby, I would like to book an appointment.");
+const mapsHref = () => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(raw("MAP_QUERY") || set("ADDRESS"));
+function renderContact(){
+  const rows = [];
+  if (raw("PHONE")) rows.push(["phone", t("Call"), '<span class="ltr">' + esc(raw("PHONE")) + "</span>", telOf(raw("PHONE")), " data-tel"]);
+  if (raw("PHONE_2")) rows.push(["phone", t("Call"), '<span class="ltr">' + esc(raw("PHONE_2")) + "</span>", telOf(raw("PHONE_2")), ""]);
+  if (waNum()) rows.push(["wa", t("WhatsApp"), '<span class="ltr">+' + esc(waNum()) + "</span>", waLink(waGeneral()), ' target="_blank" rel="noopener"']);
+  if (raw("EMAIL")) rows.push(["mail", t("Email"), esc(raw("EMAIL")), "mailto:" + raw("EMAIL"), ""]);
+  if (set("ADDRESS")) rows.push(["pin", t("Visit"), esc(set("ADDRESS")), mapsHref(), ' target="_blank" rel="noopener"']);
+  if (set("HOURS")) rows.push(["clock", t("Hours"), esc(set("HOURS")), "", ""]);
+  const html = rows.map(r => "<li>" + (r[3] ? '<a href="' + esc(r[3]) + '"' + r[4] + ">" : "<div>") + ic(r[0]) + "<span><small>" + esc(r[1]) + "</small>" + r[2] + "</span>" + (r[3] ? "</a>" : "</div>") + "</li>").join("");
+  $$("[data-contact-rows]").forEach(u => u.innerHTML = html);
+  const soc = [["INSTAGRAM","ig","Instagram"],["FACEBOOK","fb","Facebook"],["MESSENGER","msgr","Messenger"],["TIKTOK","tiktok","TikTok"]];
+  const socHtml = soc.filter(s => raw(s[0])).map(s => '<a href="' + esc(raw(s[0])) + '" target="_blank" rel="noopener" aria-label="' + s[2] + '">' + ic(s[1]) + "</a>").join("")
+    + (waNum() ? '<a href="' + esc(waLink(waGeneral())) + '" target="_blank" rel="noopener" aria-label="WhatsApp">' + ic("wa") + "</a>" : "");
+  $$("[data-social]").forEach(b => b.innerHTML = socHtml);
+  $$("[data-wa]").forEach(a => { a.href = waLink(waGeneral()); a.target = "_blank"; a.rel = "noopener"; });
+  $$("a[data-tel]").forEach(a => a.href = telOf(raw("PHONE")));
+  $("#mapLink").href = mapsHref();
+}
+
+/* ── settings text ── */
+function renderSettings(){
+  $$("[data-s]").forEach(el => { el.textContent = set(el.dataset.s); });
+  const body = set("ABOUT_TEXT");
+  $("#aboutBody").innerHTML = body.split(/\n\s*\n/).filter(Boolean).map(x => "<p>" + esc(x.trim()) + "</p>").join("");
+  const ai = raw("ABOUT_IMAGE"); $("#aboutImg").closest("figure").hidden = !ai; $(".about-grid").classList.toggle("solo", !ai);
+  if (ai) setImg($("#aboutImg"), ai, set("NAME"));
+  setImg($("#heroImg"), raw("HERO_IMAGE"), set("NAME"));
+  $$("[data-logo]").forEach(i => i.alt = set("NAME"));
+}
+
+/* ── hero stats + about strip + features ── */
+function renderStats(){
+  const st = [
+    ["star", String(D.depts.length), t("Departments_stat")],
+    ["user", String(D.docs.length), t("Doctors_stat")],
+    ["sparkle", String(D.services.length), t("Treatments_stat")],
+    ["cal", t("Online"), t("Booking_stat")]
+  ];
+  $("#heroStats").innerHTML = st.map(x => "<li>" + ic(x[0]) + "<div><b>" + esc(x[1]) + "</b><small>" + esc(x[2]) + "</small></div></li>").join("");
+  const sp = [["tooth", t("Kids & adults"), t("Dental care_stat")]].concat(st.slice(0, 3));
+  $("#aboutSpecs").innerHTML = sp.map(s => '<li class="reveal"><span class="badge">' + ic(s[0]) + "</span><b>" + esc(s[1]) + "</b><span>" + esc(s[2]) + "</span></li>").join("");
+  const FI = ["tooth", "cal", "sparkle", "pin"];
+  $("#features").innerHTML = D.features.map((f, i) => '<li class="reveal"><span class="badge">' + ic(FI[i % 4]) + "</span><b class=\"feat-t\">" + esc(lv(f, "title")) + "</b><span>" + esc(lv(f, "text")) + "</span></li>").join("");
+}
+
+/* ── marquee ── */
+function renderMarquee(){
+  const items = D.services.map(s => '<span class="mq-item" lang="' + L + '">' + esc(lv(s, "name")) + '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg></span>').join("");
+  $("#mqTrack").innerHTML = items + '<span aria-hidden="true" style="display:contents">' + items + "</span>";
+}
+
+/* ── departments (Jaguar project rows) ── */
+function renderDepts(){
+  $("#deptList").innerHTML = D.depts.map((d, i) => {
+    const sv = servIn(d.id), dc = docsIn(d.id);
+    const media = d.image
+      ? '<figure class="media dept-media r-img"><img src="' + esc(d.image) + '" alt="' + esc(lv(d, "name")) + '" loading="lazy" width="1200" height="900"></figure>'
+      : '<figure class="media dept-media r-img dept-art" aria-hidden="true"><span class="dept-icon">' + ic(d.icon) + "</span><span class=\"dept-n\">" + String(i + 1).padStart(2, "0") + "</span>" +
+        '<span class="dept-docs">' + dc.slice(0, 4).map(x => docPhoto(x, "sm")).join("") + "</span></figure>";
+    return '<article class="proj reveal" id="dept-' + esc(d.id) + '">' + media + "<div>" +
+      '<span class="type-chip">' + esc(dc.length === 1 ? t("1 doctor") : t("{n} doctors", { n: dc.length })) + " · " + esc(t("{n} treatments", { n: sv.length })) + "</span>" +
+      "<h3>" + esc(lv(d, "name")) + "</h3>" +
+      '<p class="desc">' + esc(lv(d, "description")) + "</p>" +
+      (sv.length ? '<div class="about-lists one"><div><h4>' + esc(t("Treatments in this department")) + '</h4><ul class="ticks cols">' + sv.map(s => "<li>" + ic("check") + "<span>" + esc(lv(s, "name")) + "</span></li>").join("") + "</ul></div></div>" : "") +
+      '<div class="btns"><a class="btn btn-deep" href="#book" data-book data-dept="' + esc(d.id) + '">' + ic("cal") + "<span>" + esc(t("Book in {x}", { x: lv(d, "name") })) + "</span></a>" +
+      '<a class="btn btn-line" href="#doctors" data-docfilter="' + esc(d.id) + '">' + esc(t("See the doctors")) + "</a></div>" +
+      '<p class="wa-line"><a class="link" href="' + esc(waLink(t("Hello Tabeeby, I have a question about {x}.", { x: lv(d, "name") }))) + '" target="_blank" rel="noopener">' + ic("wa") + "<span>" + esc(t("Ask on WhatsApp")) + "</span></a></p>" +
+      "</div></article>";
+  }).join("");
+}
+
+/* ── chips ── */
+function chipsHTML(cur, countFn){
+  const total = countFn("all");
+  return '<button class="chip" type="button" data-f="all" aria-pressed="' + (cur === "all") + '">' + esc(t("All")) + " <small>" + total + "</small></button>" +
+    D.depts.map(d => '<button class="chip" type="button" data-f="' + esc(d.id) + '" aria-pressed="' + (cur === String(d.id)) + '">' + ic(d.icon) + esc(lv(d, "name")) + " <small>" + countFn(d.id) + "</small></button>").join("");
+}
+
+/* ── treatments (Jaguar dark cards) ── */
+function renderTreatments(){
+  const box = $("#treatChips");
+  box.hidden = D.depts.length < 2;
+  box.innerHTML = chipsHTML(TF, id => servIn(id).length);
+  $$(".chip", box).forEach(b => b.onclick = () => { TF = b.dataset.f; renderTreatments(); observe($("#treatments")); });
+  $("#treatList").innerHTML = servIn(TF).map((s, i) => {
+    const d = dept(s.department);
+    return '<article class="card ' + (i % 2 ? "r-c2" : "r-c1") + ' reveal"><div class="card-top"><span class="card-num">' + String(i + 1).padStart(2, "0") + "</span>" + ic(s.icon || (d && d.icon)) + "</div>" +
+      (d ? '<p class="card-dept">' + esc(lv(d, "name")) + "</p>" : "") +
+      "<h3>" + esc(lv(s, "name")) + "</h3><p>" + esc(lv(s, "text")) + "</p>" +
+      '<a class="card-link" href="#book" data-book data-dept="' + esc(s.department) + '"><span>' + esc(t("Book this treatment")) + '</span><svg class="i flip"><use href="#i-arrow"/></svg></a></article>';
+  }).join("");
+}
+
+/* ── doctors ── */
+function renderDoctors(){
+  const box = $("#docChips");
+  box.hidden = D.depts.length < 2;
+  box.innerHTML = chipsHTML(DF, id => docsIn(id).length);
+  $$(".chip", box).forEach(b => b.onclick = () => { DF = b.dataset.f; renderDoctors(); observe($("#doctors")); });
+  $("#docList").innerHTML = docsIn(DF).map((d, i) => {
+    const dp = dept(d.department), langs = lv(d, "languages"), bio = lv(d, "bio");
+    return '<article class="doc ' + (i % 2 ? "r-c2" : "r-c1") + ' reveal">' + docPhoto(d) +
+      '<div class="doc-body"><span class="type-chip">' + esc(dp ? lv(dp, "name") : "") + "</span>" +
+      "<h3>" + esc(lv(d, "name")) + '</h3><p class="dev">' + esc(lv(d, "title")) + "</p>" +
+      (bio ? '<p class="doc-bio">' + esc(bio) + "</p>" : "") +
+      (langs ? '<p class="doc-lang">' + ic("chat") + "<span>" + esc(t("Languages")) + ": " + esc(langs) + "</span></p>" : "") +
+      '<a class="btn btn-deep btn-block" href="#book" data-book data-dept="' + esc(d.department) + '" data-doc="' + esc(d.id) + '">' + ic("cal") + "<span>" + esc(t("Book with {x}", { x: lv(d, "name") })) + "</span></a>" +
+      "</div></article>";
+  }).join("");
+}
+
+/* ── FAQ ── */
+function renderFaq(){
+  $("#faqList").innerHTML = D.faq.map(f => '<div class="faq-item"><button class="faq-q" type="button" aria-expanded="false"><span>' + esc(lv(f, "question")) + '</span><svg class="i"><use href="#i-plus"/></svg></button><div class="faq-a"><div><p>' + esc(lv(f, "answer")) + "</p></div></div></div>").join("");
+  $("#faq").hidden = !D.faq.length;
+}
+document.addEventListener("click", e => { const b = e.target.closest(".faq-q"); if (b) b.setAttribute("aria-expanded", String(b.getAttribute("aria-expanded") !== "true")); });
+
+/* ── booking: department → doctor → Google Calendar booking page ── */
+function bookingUrl(){
+  const d = doc(SEL.doc), dp = dept(SEL.dept);
+  let u = (d && d.booking_url) || (dp && dp.booking_url) || raw("BOOKING_URL") || "";
+  u = String(u).trim();
+  if (!/^https:\/\//i.test(u)) return "";
+  if (/calendar\.google\.com\/calendar\/appointments/i.test(u) && !/[?&]gv=true/.test(u)) u += (u.includes("?") ? "&" : "?") + "gv=true";
+  return u;
+}
+function fillSelects(){
+  if (!dept(SEL.dept)) SEL.dept = D.depts[0] ? String(D.depts[0].id) : "";
+  const list = docsIn(SEL.dept);
+  if (SEL.doc && !list.some(x => String(x.id) === SEL.doc)) SEL.doc = "";
+  $$("[data-dept-select]").forEach(s => { s.innerHTML = D.depts.map(d => '<option value="' + esc(d.id) + '">' + esc(lv(d, "name")) + "</option>").join(""); s.value = SEL.dept; });
+  $$("[data-doc-select]").forEach(s => { s.innerHTML = '<option value="">' + esc(t("Any available doctor")) + "</option>" + list.map(d => '<option value="' + esc(d.id) + '">' + esc(lv(d, "name")) + "</option>").join(""); s.value = SEL.doc; });
+}
+let lastUrl = null;
+function renderBooking(){
+  fillSelects();
+  const d = doc(SEL.doc), dp = dept(SEL.dept);
+  $("#bookWho").innerHTML = d
+    ? docPhoto(d, "xs") + "<div><b>" + esc(lv(d, "name")) + "</b><small>" + esc(lv(d, "title")) + "</small></div>"
+    : '<span class="badge">' + ic(dp ? dp.icon : "cal") + "</span><div><b>" + esc(dp ? lv(dp, "name") : "") + "</b><small>" + esc(t("Any available doctor")) + "</small></div>";
+  const u = bookingUrl();
+  $("#bookFrame").hidden = !u; $("#bookReq").hidden = !!u; $("#bookOpen").hidden = !u;
+  if (u){
+    $("#bookOpen").href = u;
+    if (u !== lastUrl){ $("#bookIframe").src = u; lastUrl = u; }
+    const s = $("#bookReq").nextElementSibling; if (s && s.classList.contains("sent")) s.hidden = true;
+  }
+}
+function choose(deptId, docId){ if (deptId) SEL.dept = String(deptId); SEL.doc = docId ? String(docId) : ""; renderBooking(); }
+document.addEventListener("change", e => {
+  if (e.target.matches("[data-dept-select]")){ SEL.dept = e.target.value; SEL.doc = ""; renderBooking(); }
+  if (e.target.matches("[data-doc-select]")){ SEL.doc = e.target.value; renderBooking(); }
+});
+$("#quickBook").addEventListener("submit", e => { e.preventDefault(); goBook(); });
+function goBook(){ const b = $("#book"); b.scrollIntoView({ behavior: RM ? "auto" : "smooth" }); }
+
+/* fallback request → WhatsApp (used only while no booking link is set) */
+$("#bookReq").addEventListener("submit", e => {
+  e.preventDefault();
+  const f = e.currentTarget, g = n => String(f.elements[n].value || "").trim(), err = $(".f-err", f);
+  $$("[aria-invalid]", f).forEach(x => x.removeAttribute("aria-invalid"));
+  const bad = (n, m) => { f.elements[n].setAttribute("aria-invalid", "true"); f.elements[n].focus(); err.textContent = m; };
+  if (g("name").length < 2) return bad("name", t("Please enter your name."));
+  const ph = g("phone").replace(/\D/g, ""); if (ph.length < 7 || ph.length > 15) return bad("phone", t("Please enter a valid phone number."));
+  if (!g("date")) return bad("date", t("Please choose a date."));
+  err.textContent = "";
+  const d = doc(SEL.doc), dp = dept(SEL.dept), tm = f.elements.time;
+  const msg = t("Booking request") + "\n" + t("Department") + ": " + (dp ? lv(dp, "name") : "") + "\n" + t("Doctor") + ": " + (d ? lv(d, "name") : t("Any available doctor")) +
+    "\n" + t("Date") + ": " + g("date") + "\n" + t("Time") + ": " + tm.options[tm.selectedIndex].text + "\n" + t("Name") + ": " + g("name") + "\n" + t("Phone") + ": " + g("phone") + (g("notes") ? "\n" + t("Notes") + ": " + g("notes") : "");
+  window.open(waLink(msg), "_blank", "noopener");
+  f.hidden = true;
+  let s = f.nextElementSibling;
+  if (!s || !s.classList.contains("sent")){ s = document.createElement("div"); s.className = "sent"; s.setAttribute("role", "status"); f.after(s); }
+  s.hidden = false;
+  s.innerHTML = '<div class="badge">' + ic("check") + "</div><h3>" + esc(t("Thank you, {x}.", { x: g("name").split(" ")[0] })) + "</h3><p>" + esc(t("Your request is ready in WhatsApp. Press send and we will confirm your appointment.")) + '</p><button class="btn btn-line" type="button">' + esc(t("Book another")) + "</button>";
+  $("button", s).onclick = () => { s.hidden = true; f.hidden = false; f.reset(); };
+});
+
+/* ── how booking works ── */
+let HOW = 0;
+function renderHow(){
+  const steps = $$(".step"), txt = $$("#howData p");
+  steps.forEach((s, i) => { s.setAttribute("aria-selected", String(i === HOW)); s.tabIndex = i === HOW ? 0 : -1; });
+  $("#howNum").textContent = String(HOW + 1).padStart(2, "0") + " / " + String(steps.length).padStart(2, "0");
+  $("#howTitle").textContent = $("b", steps[HOW]).textContent;
+  $("#howText").textContent = txt[HOW] ? txt[HOW].textContent : "";
+}
+$$(".step").forEach((s, i) => s.addEventListener("click", () => {
+  if (i === HOW) return; HOW = i; const d = $("#howDetail");
+  if (RM){ renderHow(); return; }
+  d.classList.add("fade"); setTimeout(() => { renderHow(); d.classList.remove("fade"); }, 250);
+}));
+$(".steps").addEventListener("keydown", e => {
+  const steps = $$(".step"), rtl = document.documentElement.dir === "rtl"; let d = 0;
+  if (e.key === "ArrowDown" || e.key === (rtl ? "ArrowLeft" : "ArrowRight")) d = 1;
+  if (e.key === "ArrowUp" || e.key === (rtl ? "ArrowRight" : "ArrowLeft")) d = -1;
+  if (!d) return; e.preventDefault();
+  const n = (HOW + d + steps.length) % steps.length; steps[n].focus(); steps[n].click();
+});
+
+/* ── mobile menu ── */
+const menu = $("#menu"), burger = $("#burger");
+function toggleMenu(open){
+  document.body.classList.toggle("menu-open", open);
+  burger.setAttribute("aria-expanded", String(open));
+  burger.setAttribute("aria-label", t(open ? "Close menu" : "Open menu"));
+  document.body.style.overflow = open ? "hidden" : "";
+  if (open){ menu.hidden = false; $$("nav a", menu).forEach((a, i) => a.style.transitionDelay = (RM ? 0 : i * 60) + "ms"); requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.add("show"))); }
+  else { menu.classList.remove("show"); menu.hidden = true; }
+}
+burger.addEventListener("click", () => toggleMenu(burger.getAttribute("aria-expanded") !== "true"));
+$$("a, button", menu).forEach(a => a.addEventListener("click", () => toggleMenu(false)));
+document.addEventListener("keydown", e => { if (e.key === "Escape" && document.body.classList.contains("menu-open")) toggleMenu(false); });
+
+/* ── global clicks ── */
+document.addEventListener("click", e => {
+  const bk = e.target.closest("[data-book]");
+  if (bk){ if (bk.dataset.dept || bk.dataset.doc) choose(bk.dataset.dept || SEL.dept, bk.dataset.doc || ""); return; }
+  const df = e.target.closest("[data-docfilter]");
+  if (df){ DF = df.dataset.docfilter; renderDoctors(); observe($("#doctors")); return; }
+  if (e.target.closest("[data-lang-toggle]")){ setLang(L === "ar" ? "en" : "ar", true); return; }
+  const sl = e.target.closest("[data-setlang]");
+  if (sl){ e.preventDefault(); setLang(sl.dataset.setlang, true); window.scrollTo({ top: 0, behavior: RM ? "auto" : "smooth" }); }
+});
+
+/* ── scroll: solid header, floating button tone ── */
+const hdr = $("#hdr"), pill = $("#fpill"), hero = $("#top");
+let ticking = false;
+function toneAt(el){
+  const r = el.getBoundingClientRect(); if (!r.width) return null;
+  const pts = document.elementsFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+  for (const x of pts){ if (el.contains(x)) continue; const s = x.closest("[data-tone]"); if (s) return s.dataset.tone; }
+  return null;
+}
+function onScroll(){
+  ticking = false;
+  hdr.classList.toggle("solid", window.scrollY > 80);
+  document.body.classList.toggle("past-hero", window.scrollY > hero.offsetHeight * .6);
+  pill.classList.toggle("on-dark", toneAt(pill) === "dark");
+}
+const req = () => { if (!ticking){ ticking = true; requestAnimationFrame(onScroll); } };
+window.addEventListener("scroll", req, { passive: true });
+window.addEventListener("resize", req);
+
+/* ── reveal on scroll ── */
+const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } }), { threshold: .12 }) : null;
+function observe(root){
+  $$(".stagger", root).forEach(g => [...g.children].forEach((c, i) => c.style.transitionDelay = (RM ? 0 : Math.min(i, 6) * 90) + "ms"));
+  $$(".reveal:not(.in)", root).forEach(el => io ? io.observe(el) : el.classList.add("in"));
+}
+
+function renderSchema(){
+  const url = C.SITE_URL || location.origin + location.pathname;
+  const org = { "@context": "https://schema.org", "@type": "MedicalClinic", "name": raw("NAME") || "Tabeeby Medical Center", "alternateName": S.NAME ? S.NAME.arabic : "", "url": url,
+    "telephone": raw("PHONE"), "email": raw("EMAIL"), "medicalSpecialty": ["Dentistry", "Dermatology"],
+    "address": { "@type": "PostalAddress", "streetAddress": raw("ADDRESS"), "addressLocality": "Sharjah", "addressCountry": "AE" },
+    "employee": D.docs.map(d => ({ "@type": "Physician", "name": d.name_en, "medicalSpecialty": d.title_en })) };
+  let s = $("#ldDyn"); if (!s){ s = document.createElement("script"); s.type = "application/ld+json"; s.id = "ldDyn"; document.head.appendChild(s); }
+  s.textContent = JSON.stringify(org);
+}
+
+function renderAll(){
+  if (!D) return;
+  renderSettings(); renderContact(); renderStats(); renderMarquee(); renderDepts(); renderTreatments(); renderDoctors(); renderFaq(); renderBooking(); renderHow();
+  observe(document);
+}
+
+/* ── start ── */
+(async function init(){
+  $("#year").textContent = new Date().getFullYear();
+  L = detectLang();
+  const h = document.documentElement; h.lang = L; h.dir = L === "ar" ? "rtl" : "ltr";
+  D = prepare(await loadContent());
+  applyColors();
+  const q = new URLSearchParams(location.search);
+  if (q.get("doctor") && doc(q.get("doctor"))){ const d = doc(q.get("doctor")); SEL.dept = String(d.department); SEL.doc = String(d.id); }
+  else if (q.get("department") && dept(q.get("department"))) SEL.dept = q.get("department");
+  setLang(L, false);
+  renderSchema();
+  h.classList.remove("loading");
+  onScroll();
+  if (location.hash){ const el = document.getElementById(location.hash.slice(1)); if (el) setTimeout(() => el.scrollIntoView(), 50); }
+})();
+})();
+</script>
+</body>
+</html>
