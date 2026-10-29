@@ -1151,15 +1151,17 @@ function prepare(d){
   const ids = new Set(depts.map(x => String(x.id)));
   return {
     depts: depts,
-    docs: clean(d.Doctors).filter(r => (r.name_en || r.name_ar) && shown(r) && ids.has(String(r.department))).sort(byOrder),
+    docs: clean(d.Doctors).filter(r => (r.name_en || r.name_ar) && shown(r) && String(r.department == null ? "" : r.department).split(/[,;|،]+/).some(x => ids.has(x.trim()))).sort(byOrder),
     services: clean(d.Services).filter(r => (r.name_en || r.name_ar) && shown(r)).sort(byOrder),
     features: clean(d.Features).filter(r => (r.title_en || r.title_ar) && shown(r)),
     faq: clean(d.FAQ).filter(r => (r.question_en || r.question_ar) && shown(r))
   };
 }
+/* a doctor can belong to several departments: write the ids separated by commas in the "department" column, e.g. dental,derma */
+const docDepts = d => String(d.department == null ? "" : d.department).split(/[,;|،]+/).map(x => x.trim()).filter(Boolean);
 const dept = id => D.depts.find(x => String(x.id) === String(id));
 const doc = id => D.docs.find(x => String(x.id) === String(id));
-const docsIn = id => D.docs.filter(x => !id || id === "all" || String(x.department) === String(id));
+const docsIn = id => D.docs.filter(x => !id || id === "all" || docDepts(x).includes(String(id)));
 const servIn = id => D.services.filter(x => !id || id === "all" || String(x.department) === String(id));
 
 /* ── colours from the Settings tab ── */
@@ -1331,13 +1333,14 @@ function renderDoctors(){
   box.innerHTML = chipsHTML(DF, id => docsIn(id).length);
   $$(".chip", box).forEach(b => b.onclick = () => { DF = b.dataset.f; renderDoctors(); observe($("#doctors")); });
   $("#docList").innerHTML = docsIn(DF).map((d, i) => {
-    const dp = dept(d.department), langs = lv(d, "languages"), bio = lv(d, "bio");
+    const dps = docDepts(d).map(dept).filter(Boolean), dp = dps[0], langs = lv(d, "languages"), bio = lv(d, "bio");
+    const bookDept = (DF !== "all" && docDepts(d).includes(String(DF))) ? DF : (dp ? dp.id : d.department);
     return '<article class="doc ' + (i % 2 ? "r-c2" : "r-c1") + ' reveal">' + docPhoto(d) +
-      '<div class="doc-body"><span class="type-chip">' + esc(dp ? lv(dp, "name") : "") + "</span>" +
+      '<div class="doc-body"><span class="type-chip">' + esc(dps.map(x => lv(x, "name")).join(" · ")) + "</span>" +
       "<h3>" + esc(lv(d, "name")) + '</h3><p class="dev">' + esc(lv(d, "title")) + "</p>" +
       (bio ? '<p class="doc-bio">' + esc(bio) + "</p>" : "") +
       (langs ? '<p class="doc-lang">' + ic("chat") + "<span>" + esc(t("Languages")) + ": " + esc(langs) + "</span></p>" : "") +
-      '<a class="btn btn-deep btn-block" href="#book" data-book data-dept="' + esc(d.department) + '" data-doc="' + esc(d.id) + '">' + ic("cal") + "<span>" + esc(t("Book with {x}", { x: lv(d, "name") })) + "</span></a>" +
+      '<a class="btn btn-deep btn-block" href="#book" data-book data-dept="' + esc(bookDept) + '" data-doc="' + esc(d.id) + '">' + ic("cal") + "<span>" + esc(t("Book with {x}", { x: lv(d, "name") })) + "</span></a>" +
       "</div></article>";
   }).join("");
 }
@@ -1507,7 +1510,7 @@ function renderAll(){
   D = prepare(await loadContent());
   applyColors();
   const q = new URLSearchParams(location.search);
-  if (q.get("doctor") && doc(q.get("doctor"))){ const d = doc(q.get("doctor")); SEL.dept = String(d.department); SEL.doc = String(d.id); }
+  if (q.get("doctor") && doc(q.get("doctor"))){ const d = doc(q.get("doctor")); SEL.dept = String(docDepts(d).find(x => dept(x)) || d.department); SEL.doc = String(d.id); }
   else if (q.get("department") && dept(q.get("department"))) SEL.dept = q.get("department");
   setLang(L, false);
   renderSchema();
