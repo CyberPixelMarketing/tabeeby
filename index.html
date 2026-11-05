@@ -33,6 +33,8 @@
        رقم واتساب الطوارئ. إذا تُرك فارغاً يختفي زر الطوارئ.
      - Doctors tab optional columns: profile_en/ar (about), specialties_en/ar,
        treatments_en/ar (one item per line). الملف الشخصي للطبيب.
+     - Doctors tab "schedule": the doctor's own days and hours, e.g.
+       Sat-Wed 09:00-17:00; Thu 09:00-13:00, 16:00-20:00   جدول دوام الطبيب.
 ════════════════════════════════════════════════════════════════════════
 -->
 <script>
@@ -677,6 +679,13 @@ body{font-weight:400}
 .dp-sec h3{font:700 1rem var(--f-d);color:var(--ink);margin:0 0 12px}
 .dp-sec p{margin:0 0 10px;font-size:.98rem}
 .docdlg .btns{margin-top:28px}
+.doc-sched{display:flex;gap:8px;align-items:flex-start;font-size:.86rem;line-height:1.5;margin-top:10px;color:rgba(var(--ink-rgb),.85)}
+.nw{white-space:nowrap}
+.doc-sched svg.i{width:18px;height:18px;color:var(--deep);margin-top:2px;flex:none}
+.dp-hours{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.dp-hours li{display:flex;justify-content:space-between;gap:16px;padding:10px 14px;background:var(--sand-soft);border-radius:10px;font-size:.95rem}
+.dp-hours li b{color:var(--ink);font-weight:700}
+.dp-hours li.off{opacity:.6}
 </style>
 </head>
 <body>
@@ -1161,7 +1170,10 @@ const I18N = {
   "Specialties": "الاختصاصات",
   "Treatments offered": "العلاجات التي يقدمها",
   "Doctor profile": "الملف الشخصي للطبيب",
-  "Close": "إغلاق"
+  "Close": "إغلاق",
+  "Available hours": "أوقات الدوام",
+  "Hours of {x}": "أوقات دوام {x}",
+  "{d} is not available on {x}. Please choose another day.": "{d} غير متاح يوم {x}. يرجى اختيار يوم آخر."
 };
 const STAT_EN = { "Departments_stat": "Specialised departments", "Doctors_stat": "Doctors and specialists", "Treatments_stat": "Treatments and services", "Booking_stat": "Booking, day or night", "Dental care_stat": "Dental care" };
 
@@ -1225,7 +1237,7 @@ function prepare(d){
   const ids = new Set(depts.map(x => String(x.id)));
   return {
     depts: depts,
-    docs: clean(d.Doctors).filter(r => (r.name_en || r.name_ar) && shown(r) && String(r.department == null ? "" : r.department).split(/[,;|،]+/).some(x => ids.has(x.trim()))).sort(byOrder),
+    docs: clean(d.Doctors).filter(r => (r.name_en || r.name_ar) && shown(r) && String(r.department == null ? "" : r.department).split(/[,;|،]+/).some(x => ids.has(x.trim()))).map(r => { r.__hours = parseSchedule(r.schedule); return r; }).sort(byOrder),
     services: clean(d.Services).filter(r => (r.name_en || r.name_ar) && shown(r)).sort(byOrder),
     features: clean(d.Features).filter(r => (r.title_en || r.title_ar) && shown(r)),
     faq: clean(d.FAQ).filter(r => (r.question_en || r.question_ar) && shown(r)),
@@ -1237,30 +1249,70 @@ function prepare(d){
 const EN_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const DAY_ORDER = [6, 0, 1, 2, 3, 4, 5];   /* Saturday first, as in the region */
 const DAY_NAMES = [["sun","sunday","الأحد","الاحد","احد"],["mon","monday","الاثنين","الإثنين","الاتنين","اثنين"],["tue","tues","tuesday","الثلاثاء","ثلاثاء"],["wed","wednesday","الأربعاء","الاربعاء","اربعاء"],["thu","thur","thurs","thursday","الخميس","خميس"],["fri","friday","الجمعة","الجمعه","جمعة"],["sat","saturday","السبت","سبت"]];
-const dayIdx = v => { const x = String(v == null ? "" : v).trim().toLowerCase(); return DAY_NAMES.findIndex(a => a.includes(x)); };
-/* "9:00", "9 AM", "21:00", "٩:٠٠ م" or a Sheets time cell (fraction of a day) → minutes after midnight */
+const nz = x => String(x == null ? "" : x).toLowerCase().replace(/[ً-ٟـ]/g, "").replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه");
+/* "Saturday", "sat", "Sat.", "السبت", "Saturday - السبت" → 0..6 (JS getDay) or -1 */
+const dayIdx = v => {
+  for (const tk of nz(v).split(/[^a-z؀-ۿ]+/).filter(Boolean)){
+    for (const w of [tk, tk.replace(/^ال/, "")]){
+      const i = DAY_NAMES.findIndex((a, j) => a.some(n => nz(n) === w) || (/^[a-z]{3,}$/.test(w) && EN_DAYS[j].toLowerCase().indexOf(w) === 0));
+      if (i >= 0) return i;
+    }
+  }
+  return -1;
+};
+/* "9:00", "9:00:00", "9 AM", "21:00", "0900", "9 صباحاً", "٩:٠٠ م", a Date, or a Sheets time cell (fraction of a day) → minutes after midnight */
 function toMin(v){
   if (v == null || v === "") return null;
-  if (typeof v === "number") return v > 0 && v < 1 ? Math.round(v * 1440) : (v >= 0 && v <= 24 ? Math.round(v * 60) : null);
-  const x = String(v).trim().toLowerCase().replace(/[٠-٩]/g, c => "٠١٢٣٤٥٦٧٨٩".indexOf(c));
-  const m = x.match(/^(\d{1,2})(?:[:.](\d{2}))?\s*(am|pm|a\.m\.|p\.m\.|ص|م)?$/);
-  if (!m) return null;
-  let h = +m[1]; const mi = +(m[2] || 0), ap = m[3];
-  if (ap){ const pm = /^(pm|p\.m\.|م)$/.test(ap); if (h === 12) h = pm ? 12 : 0; else if (pm) h += 12; }
+  if (v instanceof Date) return v.getHours() * 60 + v.getMinutes();
+  if (typeof v === "number") return v < 0 ? null : v < 1 ? Math.round(v * 1440) : v <= 24 ? Math.round(v * 60) : Math.round((v % 1) * 1440);
+  const x = nz(v).trim().replace(/[٠-٩]/g, c => "٠١٢٣٤٥٦٧٨٩".indexOf(c));
+  let m = x.match(/^(\d{1,2})(?:[:.](\d{2}))?(?:[:.]\d{2})?\s*(am|pm|a\.m\.|p\.m\.|ص|م|صباحا|مساء|ظهرا)?$/), h, mi, ap;
+  if (m){ h = +m[1]; mi = +(m[2] || 0); ap = m[3]; }
+  else if ((m = x.match(/^(\d{2})(\d{2})$/))){ h = +m[1]; mi = +m[2]; }
+  else return null;
+  if (ap){ const pm = /^(pm|p\.m\.|م|مساء|ظهرا)$/.test(ap); if (h === 12) h = pm ? 12 : 0; else if (pm) h += 12; }
   return h > 24 || mi > 59 ? null : h * 60 + mi;
 }
 function parseHours(rows){
   if (!rows || !rows.length) return null;
   const days = [];
-  rows.forEach(r => {
-    const k = dayIdx(r.day); if (k < 0) return;
-    const off = /^(yes|true|1|closed|مغلق|نعم)$/i.test(String(r.closed == null ? "" : r.closed).trim());
-    const per = off ? [] : [[r.open, r.close], [r.open_2, r.close_2]].map(p => [toMin(p[0]), toMin(p[1])])
+  rows.forEach(row => {
+    const r = {}; for (const key in row) r[String(key).trim().toLowerCase().replace(/\s+/g, "_")] = row[key];
+    if (r.day == null || String(r.day).trim() === "") return;
+    const k = dayIdx(r.day);
+    if (k < 0){ console.warn("Hours tab: day not recognised:", r.day); return; }
+    const off = /^(yes|y|true|1|closed|مغلق|نعم)$/i.test(String(r.closed == null ? "" : r.closed).trim());
+    const pairs = [[r.open, r.close], [r.open_2, r.close_2]];
+    const per = off ? [] : pairs.map(p => [toMin(p[0]), toMin(p[1])])
       .filter(p => p[0] != null && p[1] != null).map(p => [p[0], p[1] <= p[0] ? p[1] + 1440 : p[1]]);
+    if (!off && !per.length && pairs.some(p => String(p[0] == null ? "" : p[0]).trim() !== "" || String(p[1] == null ? "" : p[1]).trim() !== "")) console.warn("Hours tab: could not read the times for", r.day, row);
     days[k] = { closed: !per.length, per: per };
   });
-  if (!days.some(Boolean)) return null;
+  if (!days.some(d => d && !d.closed)) return null;   /* no times filled in yet = no restriction */
   return [0, 1, 2, 3, 4, 5, 6].map(i => days[i] || { closed: true, per: [] });   /* a day that is not listed = closed */
+}
+/* doctor schedule (Doctors tab, column "schedule"):  Sat-Wed 09:00-17:00; Thu 09:00-13:00, 16:00-20:00
+   groups separated by ";" or a new line; days = one, a list (Sat, Mon) or a range (Sat-Wed); a day that is not listed = day off */
+function parseSchedule(txt){
+  if (txt == null || String(txt).trim() === "") return null;
+  const SEP = "(?:-|–|—|\\bto\\b|إلى|الى)", T = "(\\d{1,2}(?:[:.]\\d{2})?\\s*(?:am|pm|a\\.m\\.|p\\.m\\.|ص|م)?)";
+  const days = [];
+  String(txt).split(/[;؛\n]+/).forEach(seg => {
+    const re = new RegExp(T + "\\s*" + SEP + "\\s*" + T, "gi"), per = []; let m;
+    while ((m = re.exec(seg))){ const a = toMin(m[1].trim()), b = toMin(m[2].trim()); if (a != null && b != null) per.push([a, b <= a ? b + 1440 : b]); }
+    if (!per.length) return;
+    const rest = seg.replace(re, " ").replace(new RegExp("\\s*" + SEP + "\\s*", "gi"), "~");
+    let idx = [];
+    rest.split(/[,،\s]+/).filter(x => x && x !== "و").forEach(tok => {
+      const p = tok.split("~").filter(Boolean);
+      if (p.length === 2){ const a = DAY_ORDER.indexOf(dayIdx(p[0])), b = DAY_ORDER.indexOf(dayIdx(p[1])); if (a >= 0 && b >= 0){ for (let i = a; ; i = (i + 1) % 7){ idx.push(DAY_ORDER[i]); if (i === b) break; } } }
+      else if (p.length === 1){ const k = dayIdx(p[0]); if (k >= 0) idx.push(k); }
+    });
+    if (!idx.length && !/[A-Za-z؀-ۿ]/.test(rest)) idx = [0, 1, 2, 3, 4, 5, 6];   /* only times written = every day */
+    idx.forEach(k => { days[k] = { closed: false, per: (days[k] ? days[k].per : []).concat(per) }; });
+  });
+  if (!days.some(Boolean)) return null;
+  return [0, 1, 2, 3, 4, 5, 6].map(i => days[i] || { closed: true, per: [] });
 }
 /* a doctor can belong to several departments: write the ids separated by commas in the "department" column, e.g. dental,derma */
 const docDepts = d => String(d.department == null ? "" : d.department).split(/[,;|،]+/).map(x => x.trim()).filter(Boolean);
@@ -1361,25 +1413,35 @@ function renderContact(){
 
 /* ── working hours: text + notice above the calendar ── */
 function fmtT(m){ m = ((m % 1440) + 1440) % 1440; const h = Math.floor(m / 60); return (h % 12 || 12) + ":" + String(m % 60).padStart(2, "0") + " " + t(h >= 12 ? "PM" : "AM"); }
-function hoursParts(){
-  if (!D || !D.hours) return [];
+function hoursParts(h){
+  h = h || (D && D.hours); if (!h) return [];
   const sig = d => d.closed ? "x" : d.per.map(p => p.join("-")).join("|"), out = [];
-  DAY_ORDER.forEach(i => { const d = D.hours[i], last = out[out.length - 1]; if (last && last.s === sig(d)) last.days.push(i); else out.push({ s: sig(d), d: d, days: [i] }); });
+  DAY_ORDER.forEach(i => { const d = h[i], last = out[out.length - 1]; if (last && last.s === sig(d)) last.days.push(i); else out.push({ s: sig(d), d: d, days: [i] }); });
   return out.map(g => {
     const a = t(EN_DAYS[g.days[0]]), b = t(EN_DAYS[g.days[g.days.length - 1]]);
     return { closed: g.d.closed, label: g.days.length > 1 ? a + " – " + b : a, times: g.d.closed ? t("Closed") : g.d.per.map(p => fmtT(p[0]) + " – " + fmtT(p[1])).join(" · ") };
   });
 }
+/* the doctor's own schedule (clinic closed days always win); no schedule = the clinic hours */
+function effHours(d){
+  const dh = d && d.__hours; if (!dh) return D.hours;
+  return D.hours ? dh.map((x, i) => D.hours[i].closed ? { closed: true, per: [] } : x) : dh;
+}
 function renderHours(){
-  const el = $("#hoursNote"), hp = hoursParts();
+  const el = $("#hoursNote"), d = doc(SEL.doc), hp = hoursParts(effHours(d));
   el.hidden = !hp.length;
-  if (hp.length) el.innerHTML = ic("clock") + "<span>" + esc(t("Working hours")) + ":</span>" + hp.map(g => '<span class="hn' + (g.closed ? " off" : "") + '"><b>' + esc(g.label) + "</b> " + esc(g.times) + "</span>").join("");
+  if (hp.length) el.innerHTML = ic("clock") + "<span>" + esc(d && d.__hours ? t("Hours of {x}", { x: lv(d, "name") }) : t("Working hours")) + ":</span>" + hp.map(g => '<span class="hn' + (g.closed ? " off" : "") + '"><b>' + esc(g.label) + "</b> " + esc(g.times) + "</span>").join("");
 }
 const dayOfDate = v => { const m = String(v).match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? new Date(+m[1], +m[2] - 1, +m[3]).getDay() : -1; };
-function closedMsg(v){ const k = dayOfDate(v); return k >= 0 && D.hours && D.hours[k].closed ? t("We are closed on {x}. Please choose another day.", { x: t(EN_DAYS[k]) }) : ""; }
+function closedMsg(v){
+  const k = dayOfDate(v), d = doc(SEL.doc), h = effHours(d);
+  if (k < 0 || !h || !h[k].closed) return "";
+  if (d && d.__hours && !(D.hours && D.hours[k].closed)) return t("{d} is not available on {x}. Please choose another day.", { d: lv(d, "name"), x: t(EN_DAYS[k]) });
+  return t("We are closed on {x}. Please choose another day.", { x: t(EN_DAYS[k]) });
+}
 const SLOTS = { Morning: [0, 720], Afternoon: [720, 1020], Evening: [1020, 1440] };
 function syncTimes(f){   /* grey out the parts of the day the clinic is closed */
-  const k = dayOfDate(f.elements.date.value), per = D.hours && k >= 0 ? D.hours[k].per : null, sel = f.elements.time;
+  const k = dayOfDate(f.elements.date.value), h = effHours(doc(SEL.doc)), per = h && k >= 0 ? h[k].per : null, sel = f.elements.time;
   Array.from(sel.options).forEach(o => { const sl = SLOTS[o.value]; o.disabled = !!(per && sl && !per.some(p => p[0] < sl[1] && p[1] > sl[0])); });
   if (sel.selectedIndex >= 0 && sel.options[sel.selectedIndex].disabled){ const ok = Array.from(sel.options).find(o => !o.disabled); if (ok) sel.value = ok.value; }
 }
@@ -1477,12 +1539,13 @@ function renderDoctors(){
   $("#docList").innerHTML = docsIn(DF).map((d, i) => {
     const dps = docDepts(d).map(dept).filter(Boolean), dp = dps[0], langs = lv(d, "languages"), bio = lv(d, "bio");
     const bookDept = (DF !== "all" && docDepts(d).includes(String(DF))) ? DF : (dp ? dp.id : d.department);
-    const pf = '#dr-' + esc(d.id);
+    const pf = '#dr-' + esc(d.id), sch = d.__hours ? hoursParts(d.__hours).filter(g => !g.closed) : [];
     return '<article class="doc ' + (i % 2 ? "r-c2" : "r-c1") + ' reveal"><a class="doc-ph-link" href="' + pf + '" data-doc-open="' + esc(d.id) + '" tabindex="-1" aria-hidden="true">' + docPhoto(d) + "</a>" +
       '<div class="doc-body"><span class="type-chip">' + esc(dps.map(x => lv(x, "name")).join(" · ")) + "</span>" +
       '<h3><a href="' + pf + '" data-doc-open="' + esc(d.id) + '">' + esc(lv(d, "name")) + '</a></h3><p class="dev">' + esc(lv(d, "title")) + "</p>" +
       (bio ? '<p class="doc-bio">' + esc(bio) + "</p>" : "") +
       (langs ? '<p class="doc-lang">' + ic("chat") + "<span>" + esc(t("Languages")) + ": " + esc(langs) + "</span></p>" : "") +
+      (sch.length ? '<p class="doc-sched">' + ic("clock") + "<span>" + sch.map(g => esc(g.label) + " " + g.times.split(" · ").map(x => '<span class="nw">' + esc(x) + "</span>").join(" · ")).join("<br>") + "</span></p>" : "") +
       '<div class="doc-btns"><a class="btn btn-line btn-block" href="' + pf + '" data-doc-open="' + esc(d.id) + '">' + ic("user") + "<span>" + esc(t("View profile")) + "</span></a>" +
       '<a class="btn btn-deep btn-block" href="#book" data-book data-dept="' + esc(bookDept) + '" data-doc="' + esc(d.id) + '">' + ic("cal") + "<span>" + esc(t("Book with {x}", { x: lv(d, "name") })) + "</span></a></div>" +
       "</div></article>";
@@ -1500,6 +1563,7 @@ function fillProfile(id){
   const spec = lst(d, "specialties");
   let treat = lst(d, "treatments");
   if (!treat.length){ const seen = {}; dps.forEach(dp => servIn(dp.id).forEach(s => { const n = lv(s, "name"); if (n && !seen[n]){ seen[n] = 1; treat.push(n); } })); }
+  const sch = d.__hours ? hoursParts(d.__hours) : [];
   const sec = (title, inner) => '<section class="dp-sec"><h3>' + esc(t(title)) + "</h3>" + inner + "</section>";
   const ul = a => '<ul class="ticks cols">' + a.map(x => "<li>" + ic("check") + "<span>" + esc(x) + "</span></li>").join("") + "</ul>";
   $("#dpBody").innerHTML =
@@ -1509,6 +1573,7 @@ function fillProfile(id){
     (about.length ? sec("About the doctor", about.map(p => "<p>" + esc(p) + "</p>").join("")) : "") +
     (spec.length ? sec("Specialties", ul(spec)) : "") +
     (treat.length ? sec("Treatments offered", ul(treat)) : "") +
+    (sch.length ? sec("Available hours", '<ul class="dp-hours">' + sch.map(g => "<li" + (g.closed ? ' class="off"' : "") + "><b>" + esc(g.label) + "</b><span>" + esc(g.times) + "</span></li>").join("") + "</ul>") : "") +
     '<div class="btns"><a class="btn btn-deep" href="#book" data-book data-profile-close data-dept="' + esc(dps[0] ? dps[0].id : d.department) + '" data-doc="' + esc(d.id) + '">' + ic("cal") + "<span>" + esc(t("Book with {x}", { x: lv(d, "name") })) + "</span></a></div>";
   return true;
 }
@@ -1573,6 +1638,10 @@ function renderBooking(){
     if (u !== lastUrl){ $("#bookIframe").src = u; lastUrl = u; }
     const s = $("#bookReq").nextElementSibling; if (s && s.classList.contains("sent")) s.hidden = true;
   }
+  renderHours();
+  const f = $("#bookReq"), dt = f.elements.date;
+  syncTimes(f);
+  if (dt.value){ const m = closedMsg(dt.value); $(".f-err", f).textContent = m; if (m) dt.setAttribute("aria-invalid", "true"); else dt.removeAttribute("aria-invalid"); }
 }
 function choose(deptId, docId){ if (deptId) SEL.dept = String(deptId); SEL.doc = docId ? String(docId) : ""; renderBooking(); }
 document.addEventListener("change", e => {
@@ -1702,7 +1771,7 @@ function renderSchema(){
 
 function renderAll(){
   if (!D) return;
-  renderSettings(); renderContact(); renderStats(); renderMarquee(); renderDepts(); renderTreatments(); renderDoctors(); renderFaq(); renderBooking(); renderHow(); renderHours(); renderEmergency();
+  renderSettings(); renderContact(); renderStats(); renderMarquee(); renderDepts(); renderTreatments(); renderDoctors(); renderFaq(); renderBooking(); renderHow(); renderEmergency();
   if (dlg.open) fillProfile(PID);
   observe(document);
 }
