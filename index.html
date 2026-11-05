@@ -24,6 +24,15 @@
 
   4) Fixed interface words (buttons, labels) and their Arabic are in the
      I18N dictionary near the bottom of this file.
+
+  5) NEW in the Google Sheet / جديد في الشيت:
+     - Tab "Hours": columns day | open | close | open_2 | close_2 | closed
+       (day = Saturday ... Friday or السبت ... الجمعة; a day that is not listed = closed).
+       تبويب Hours: أيام وساعات الدوام. اليوم غير المكتوب يعتبر مغلق.
+     - Settings row EMERGENCY_WHATSAPP (english column) = the emergency WhatsApp number.
+       رقم واتساب الطوارئ. إذا تُرك فارغاً يختفي زر الطوارئ.
+     - Doctors tab optional columns: profile_en/ar (about), specialties_en/ar,
+       treatments_en/ar (one item per line). الملف الشخصي للطبيب.
 ════════════════════════════════════════════════════════════════════════
 -->
 <script>
@@ -631,6 +640,43 @@ body{font-weight:400}
 .about-grid.solo .about-body{margin-inline:auto}
 .about-grid.solo .btns{justify-content:center}
 .about-grid.solo .eyebrow{justify-content:center}
+/* ═══ WORKING HOURS · EMERGENCY · DOCTOR PROFILE ═══ */
+:root{--emerg:#C62828}
+.emerg{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;margin-inline-end:6px;border-radius:999px;border-end-end-radius:10px;background:var(--emerg);color:#fff;font:700 .78rem var(--f-b);letter-spacing:.08em;text-transform:uppercase;transition:background .25s}
+[dir=rtl] .emerg{font-size:.92rem;letter-spacing:0}
+.emerg svg.i{width:20px;height:20px}
+.emerg:hover,.btn-emerg:hover{background:#A31F1F}
+.btn-emerg{background:var(--emerg);color:#fff}
+@media(max-width:399px){.emerg{padding:0;width:44px}.emerg span{display:none}}
+
+.hours-note{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin:6px 0 10px;padding:12px 18px;border:1px solid rgba(var(--accent-rgb),.28);border-radius:14px;border-end-end-radius:4px;font-size:.92rem;color:rgba(var(--sand-rgb),.92)}
+.hours-note svg.i{width:20px;height:20px;color:var(--accent)}
+.hours-note .hn b{font-weight:700;color:var(--sand)}
+.hours-note .hn.off,.hours-note .hn.off b{color:#FFB4A9}
+.book-req .inp option:disabled{color:rgba(var(--ink-rgb),.35)}
+
+.doc-ph-link{display:block;flex:none}
+.doc h3 a{color:inherit}
+.doc h3 a:hover{text-decoration:underline;text-underline-offset:4px}
+.doc-btns{margin-top:auto;padding-top:20px;display:grid;gap:10px}
+.doc .doc-btns .btn{margin-top:0}
+
+.docdlg{width:min(760px,calc(100% - 24px))}
+.docdlg .mcard{padding:30px 22px 26px}
+@media(min-width:640px){.docdlg .mcard{padding:38px 40px 34px}}
+.dp-head{display:flex;gap:20px;align-items:center;padding-inline-end:44px}
+.dp-head>div{min-width:0}
+.dp-head .f-title{margin:10px 0 2px}
+.dp-head .dev{font:500 .8rem var(--f-b);letter-spacing:.12em;text-transform:uppercase;color:rgba(var(--ink-rgb),.75)}
+[dir=rtl] .dp-head .dev{font-size:.98rem;letter-spacing:0}
+.docdlg .doc-ph.dp{width:104px;height:104px;aspect-ratio:1;border-radius:50%;flex:none}
+@media(min-width:640px){.docdlg .doc-ph.dp{width:132px;height:132px}}
+.docdlg .doc-ph.dp.noimg::after{font-size:1.8rem}
+.docdlg .doc-ph.dp.noimg::before{display:none}
+.dp-sec{margin-top:26px;padding-top:22px;border-top:1px solid rgba(var(--ink-rgb),.12)}
+.dp-sec h3{font:700 1rem var(--f-d);color:var(--ink);margin:0 0 12px}
+.dp-sec p{margin:0 0 10px;font-size:.98rem}
+.docdlg .btns{margin-top:28px}
 </style>
 </head>
 <body>
@@ -667,6 +713,7 @@ body{font-weight:400}
   <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-8-4.7-8-10.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5C20 15.3 12 20 12 20z"/></symbol>
   <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 3.5H6.5v17h11v-13zM14 3.5v4h3.5M9 12h6M9 15.5h6"/></symbol>
   <symbol id="i-ext" viewBox="0 0 24 24"><path d="M13.5 4.5h6v6M19.5 4.5l-9 9M18 14v5.5H4.5V6H10"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.4v.1"/></symbol>
 </svg>
 
 <a class="skip" href="#main" data-i18n>Skip to content</a>
@@ -685,6 +732,7 @@ body{font-weight:400}
       <a href="#contact" data-i18n>Contact</a>
     </nav>
     <div class="hdr-end">
+      <a class="emerg" href="#" data-emergency hidden aria-label="Emergency — message us on WhatsApp" data-i18n-aria><svg class="i" aria-hidden="true"><use href="#i-alert"/></svg><span data-i18n>Emergency</span></a>
       <button class="lang" type="button" data-lang-toggle aria-label="Switch language" data-i18n-aria></button>
       <a class="btn btn-sand btn-sm hdr-cta" href="#book" data-book><svg class="i"><use href="#i-cal"/></svg><span data-i18n>Book appointment</span></a>
       <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
@@ -703,6 +751,7 @@ body{font-weight:400}
   </nav>
   <div class="m-contact">
     <p class="eyebrow" data-i18n>Talk to us</p>
+    <a class="btn btn-emerg" href="#" data-emergency hidden><svg class="i"><use href="#i-alert"/></svg><span data-i18n>Emergency on WhatsApp</span></a>
     <a class="btn btn-sand" href="#" data-tel><svg class="i"><use href="#i-phone"/></svg><span data-i18n>Call us</span></a>
     <a class="btn btn-ghost" href="#" data-wa><svg class="i"><use href="#i-wa"/></svg><span data-i18n>WhatsApp us</span></a>
   </div>
@@ -864,6 +913,7 @@ body{font-weight:400}
         <label class="fld"><span data-i18n>Department</span><select class="inp" name="dept" data-dept-select></select></label>
         <label class="fld"><span data-i18n>Doctor</span><select class="inp" name="doc" data-doc-select></select></label>
       </form>
+      <p class="hours-note" id="hoursNote" hidden></p>
       <div class="book-card fcard r-b" id="bookCard">
         <div class="book-head">
           <div class="doc-mini" id="bookWho"></div>
@@ -912,6 +962,7 @@ body{font-weight:400}
       <div class="btns reveal">
         <a class="btn btn-sand" href="#book" data-book><svg class="i"><use href="#i-cal"/></svg><span data-i18n>Book appointment</span></a>
         <a class="btn btn-ghost" href="#" data-wa><svg class="i"><use href="#i-wa"/></svg><span data-i18n>WhatsApp us</span></a>
+        <a class="btn btn-emerg" href="#" data-emergency hidden><svg class="i"><use href="#i-alert"/></svg><span data-i18n>Emergency on WhatsApp</span></a>
       </div>
     </div>
     <div class="reveal">
@@ -964,6 +1015,14 @@ body{font-weight:400}
 </aside>
 <a class="fpill" id="fpill" href="#book" data-book><svg class="i"><use href="#i-cal"/></svg><span data-i18n>Book appointment</span></a>
 <a class="fab wa-fab" id="fab" href="#" data-wa aria-label="Chat on WhatsApp" data-i18n-aria><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3.2 29l6.9-1.9c1.9 1 4 1.6 6 1.6 7 0 12.7-5.7 12.7-12.6S23 3 16 3zm0 23.1c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.1 1.1-4-.3-.4a10.4 10.4 0 0 1-1.6-5.5C5.3 9.8 10.1 5.1 16 5.1s10.6 4.7 10.6 10.5S21.8 26.1 16 26.1zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.3.3-.6.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.6 5.8 5 .8.4 1.4.6 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg></a>
+
+<!-- doctor profile (filled by script) -->
+<dialog id="docDialog" class="docdlg" aria-label="Doctor profile" data-i18n-aria>
+  <div class="mcard fcard">
+    <button class="mclose" type="button" data-profile-close aria-label="Close" data-i18n-aria><svg class="i"><use href="#i-close"/></svg></button>
+    <div id="dpBody"></div>
+  </div>
+</dialog>
 
 <script src="content-fallback.js" defer></script>
 <script>
@@ -1087,7 +1146,22 @@ const I18N = {
   "Kids & adults": "للصغار والكبار",
   "Dental care_stat": "رعاية الأسنان",
   "Hello Tabeeby, I would like to book an appointment.": "مرحباً طبيبي، أرغب بحجز موعد.",
-  "Hello Tabeeby, I have a question about {x}.": "مرحباً طبيبي، لدي استفسار عن {x}."
+  "Hello Tabeeby, I have a question about {x}.": "مرحباً طبيبي، لدي استفسار عن {x}.",
+  "Working hours": "ساعات العمل",
+  "Closed": "مغلق",
+  "Saturday": "السبت", "Sunday": "الأحد", "Monday": "الاثنين", "Tuesday": "الثلاثاء", "Wednesday": "الأربعاء", "Thursday": "الخميس", "Friday": "الجمعة",
+  "AM": "ص", "PM": "م",
+  "We are closed on {x}. Please choose another day.": "نحن مغلقون يوم {x}. يرجى اختيار يوم آخر.",
+  "Emergency": "طوارئ",
+  "Emergency on WhatsApp": "طوارئ عبر واتساب",
+  "Emergency — message us on WhatsApp": "طوارئ — راسلنا على واتساب",
+  "Hello Tabeeby, this is an emergency and I need urgent help.": "مرحباً طبيبي، لدي حالة طارئة وأحتاج مساعدة عاجلة.",
+  "View profile": "الملف الشخصي",
+  "About the doctor": "نبذة عن الطبيب",
+  "Specialties": "الاختصاصات",
+  "Treatments offered": "العلاجات التي يقدمها",
+  "Doctor profile": "الملف الشخصي للطبيب",
+  "Close": "إغلاق"
 };
 const STAT_EN = { "Departments_stat": "Specialised departments", "Doctors_stat": "Doctors and specialists", "Treatments_stat": "Treatments and services", "Booking_stat": "Booking, day or night", "Dental care_stat": "Dental care" };
 
@@ -1154,8 +1228,39 @@ function prepare(d){
     docs: clean(d.Doctors).filter(r => (r.name_en || r.name_ar) && shown(r) && String(r.department == null ? "" : r.department).split(/[,;|،]+/).some(x => ids.has(x.trim()))).sort(byOrder),
     services: clean(d.Services).filter(r => (r.name_en || r.name_ar) && shown(r)).sort(byOrder),
     features: clean(d.Features).filter(r => (r.title_en || r.title_ar) && shown(r)),
-    faq: clean(d.FAQ).filter(r => (r.question_en || r.question_ar) && shown(r))
+    faq: clean(d.FAQ).filter(r => (r.question_en || r.question_ar) && shown(r)),
+    hours: parseHours(clean(d.Hours || d.hours))
   };
+}
+
+/* ── working hours (Hours tab): day | open | close | open_2 | close_2 | closed ── */
+const EN_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const DAY_ORDER = [6, 0, 1, 2, 3, 4, 5];   /* Saturday first, as in the region */
+const DAY_NAMES = [["sun","sunday","الأحد","الاحد","احد"],["mon","monday","الاثنين","الإثنين","الاتنين","اثنين"],["tue","tues","tuesday","الثلاثاء","ثلاثاء"],["wed","wednesday","الأربعاء","الاربعاء","اربعاء"],["thu","thur","thurs","thursday","الخميس","خميس"],["fri","friday","الجمعة","الجمعه","جمعة"],["sat","saturday","السبت","سبت"]];
+const dayIdx = v => { const x = String(v == null ? "" : v).trim().toLowerCase(); return DAY_NAMES.findIndex(a => a.includes(x)); };
+/* "9:00", "9 AM", "21:00", "٩:٠٠ م" or a Sheets time cell (fraction of a day) → minutes after midnight */
+function toMin(v){
+  if (v == null || v === "") return null;
+  if (typeof v === "number") return v > 0 && v < 1 ? Math.round(v * 1440) : (v >= 0 && v <= 24 ? Math.round(v * 60) : null);
+  const x = String(v).trim().toLowerCase().replace(/[٠-٩]/g, c => "٠١٢٣٤٥٦٧٨٩".indexOf(c));
+  const m = x.match(/^(\d{1,2})(?:[:.](\d{2}))?\s*(am|pm|a\.m\.|p\.m\.|ص|م)?$/);
+  if (!m) return null;
+  let h = +m[1]; const mi = +(m[2] || 0), ap = m[3];
+  if (ap){ const pm = /^(pm|p\.m\.|م)$/.test(ap); if (h === 12) h = pm ? 12 : 0; else if (pm) h += 12; }
+  return h > 24 || mi > 59 ? null : h * 60 + mi;
+}
+function parseHours(rows){
+  if (!rows || !rows.length) return null;
+  const days = [];
+  rows.forEach(r => {
+    const k = dayIdx(r.day); if (k < 0) return;
+    const off = /^(yes|true|1|closed|مغلق|نعم)$/i.test(String(r.closed == null ? "" : r.closed).trim());
+    const per = off ? [] : [[r.open, r.close], [r.open_2, r.close_2]].map(p => [toMin(p[0]), toMin(p[1])])
+      .filter(p => p[0] != null && p[1] != null).map(p => [p[0], p[1] <= p[0] ? p[1] + 1440 : p[1]]);
+    days[k] = { closed: !per.length, per: per };
+  });
+  if (!days.some(Boolean)) return null;
+  return [0, 1, 2, 3, 4, 5, 6].map(i => days[i] || { closed: true, per: [] });   /* a day that is not listed = closed */
 }
 /* a doctor can belong to several departments: write the ids separated by commas in the "department" column, e.g. dental,derma */
 const docDepts = d => String(d.department == null ? "" : d.department).split(/[,;|،]+/).map(x => x.trim()).filter(Boolean);
@@ -1240,7 +1345,9 @@ function renderContact(){
   if (waNum()) rows.push(["wa", t("WhatsApp"), '<span class="ltr">+' + esc(waNum()) + "</span>", waLink(waGeneral()), ' target="_blank" rel="noopener"']);
   if (raw("EMAIL")) rows.push(["mail", t("Email"), esc(raw("EMAIL")), "mailto:" + raw("EMAIL"), ""]);
   if (set("ADDRESS")) rows.push(["pin", t("Visit"), esc(set("ADDRESS")), mapsHref(), ' target="_blank" rel="noopener"']);
-  if (set("HOURS")) rows.push(["clock", t("Hours"), esc(set("HOURS")), "", ""]);
+  const hp = hoursParts();
+  if (hp.length) rows.push(["clock", t("Hours"), hp.map(g => esc(g.label + ": " + g.times)).join("<br>"), "", ""]);
+  else if (set("HOURS")) rows.push(["clock", t("Hours"), esc(set("HOURS")), "", ""]);
   const html = rows.map(r => "<li>" + (r[3] ? '<a href="' + esc(r[3]) + '"' + r[4] + ">" : "<div>") + ic(r[0]) + "<span><small>" + esc(r[1]) + "</small>" + r[2] + "</span>" + (r[3] ? "</a>" : "</div>") + "</li>").join("");
   $$("[data-contact-rows]").forEach(u => u.innerHTML = html);
   const soc = [["INSTAGRAM","ig","Instagram"],["FACEBOOK","fb","Facebook"],["MESSENGER","msgr","Messenger"],["TIKTOK","tiktok","TikTok"]];
@@ -1250,6 +1357,41 @@ function renderContact(){
   $$("[data-wa]").forEach(a => { a.href = waLink(waGeneral()); a.target = "_blank"; a.rel = "noopener"; });
   $$("a[data-tel]").forEach(a => a.href = telOf(raw("PHONE")));
   $("#mapLink").href = mapsHref();
+}
+
+/* ── working hours: text + notice above the calendar ── */
+function fmtT(m){ m = ((m % 1440) + 1440) % 1440; const h = Math.floor(m / 60); return (h % 12 || 12) + ":" + String(m % 60).padStart(2, "0") + " " + t(h >= 12 ? "PM" : "AM"); }
+function hoursParts(){
+  if (!D || !D.hours) return [];
+  const sig = d => d.closed ? "x" : d.per.map(p => p.join("-")).join("|"), out = [];
+  DAY_ORDER.forEach(i => { const d = D.hours[i], last = out[out.length - 1]; if (last && last.s === sig(d)) last.days.push(i); else out.push({ s: sig(d), d: d, days: [i] }); });
+  return out.map(g => {
+    const a = t(EN_DAYS[g.days[0]]), b = t(EN_DAYS[g.days[g.days.length - 1]]);
+    return { closed: g.d.closed, label: g.days.length > 1 ? a + " – " + b : a, times: g.d.closed ? t("Closed") : g.d.per.map(p => fmtT(p[0]) + " – " + fmtT(p[1])).join(" · ") };
+  });
+}
+function renderHours(){
+  const el = $("#hoursNote"), hp = hoursParts();
+  el.hidden = !hp.length;
+  if (hp.length) el.innerHTML = ic("clock") + "<span>" + esc(t("Working hours")) + ":</span>" + hp.map(g => '<span class="hn' + (g.closed ? " off" : "") + '"><b>' + esc(g.label) + "</b> " + esc(g.times) + "</span>").join("");
+}
+const dayOfDate = v => { const m = String(v).match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? new Date(+m[1], +m[2] - 1, +m[3]).getDay() : -1; };
+function closedMsg(v){ const k = dayOfDate(v); return k >= 0 && D.hours && D.hours[k].closed ? t("We are closed on {x}. Please choose another day.", { x: t(EN_DAYS[k]) }) : ""; }
+const SLOTS = { Morning: [0, 720], Afternoon: [720, 1020], Evening: [1020, 1440] };
+function syncTimes(f){   /* grey out the parts of the day the clinic is closed */
+  const k = dayOfDate(f.elements.date.value), per = D.hours && k >= 0 ? D.hours[k].per : null, sel = f.elements.time;
+  Array.from(sel.options).forEach(o => { const sl = SLOTS[o.value]; o.disabled = !!(per && sl && !per.some(p => p[0] < sl[1] && p[1] > sl[0])); });
+  if (sel.selectedIndex >= 0 && sel.options[sel.selectedIndex].disabled){ const ok = Array.from(sel.options).find(o => !o.disabled); if (ok) sel.value = ok.value; }
+}
+
+/* ── emergency WhatsApp (Settings row EMERGENCY_WHATSAPP) ── */
+const emNum = () => { const d = String(raw("EMERGENCY_WHATSAPP")).replace(/\D/g, ""); return /^00/.test(d) ? d.slice(2) : /^0/.test(d) ? "971" + d.slice(1) : d; };
+function renderEmergency(){
+  const n = emNum();
+  $$("[data-emergency]").forEach(a => {
+    a.hidden = !n;
+    if (n){ a.href = "https://wa.me/" + n + "?text=" + encodeURIComponent(t("Hello Tabeeby, this is an emergency and I need urgent help.")); a.target = "_blank"; a.rel = "noopener"; }
+  });
 }
 
 /* ── settings text ── */
@@ -1335,15 +1477,64 @@ function renderDoctors(){
   $("#docList").innerHTML = docsIn(DF).map((d, i) => {
     const dps = docDepts(d).map(dept).filter(Boolean), dp = dps[0], langs = lv(d, "languages"), bio = lv(d, "bio");
     const bookDept = (DF !== "all" && docDepts(d).includes(String(DF))) ? DF : (dp ? dp.id : d.department);
-    return '<article class="doc ' + (i % 2 ? "r-c2" : "r-c1") + ' reveal">' + docPhoto(d) +
+    const pf = '#dr-' + esc(d.id);
+    return '<article class="doc ' + (i % 2 ? "r-c2" : "r-c1") + ' reveal"><a class="doc-ph-link" href="' + pf + '" data-doc-open="' + esc(d.id) + '" tabindex="-1" aria-hidden="true">' + docPhoto(d) + "</a>" +
       '<div class="doc-body"><span class="type-chip">' + esc(dps.map(x => lv(x, "name")).join(" · ")) + "</span>" +
-      "<h3>" + esc(lv(d, "name")) + '</h3><p class="dev">' + esc(lv(d, "title")) + "</p>" +
+      '<h3><a href="' + pf + '" data-doc-open="' + esc(d.id) + '">' + esc(lv(d, "name")) + '</a></h3><p class="dev">' + esc(lv(d, "title")) + "</p>" +
       (bio ? '<p class="doc-bio">' + esc(bio) + "</p>" : "") +
       (langs ? '<p class="doc-lang">' + ic("chat") + "<span>" + esc(t("Languages")) + ": " + esc(langs) + "</span></p>" : "") +
-      '<a class="btn btn-deep btn-block" href="#book" data-book data-dept="' + esc(bookDept) + '" data-doc="' + esc(d.id) + '">' + ic("cal") + "<span>" + esc(t("Book with {x}", { x: lv(d, "name") })) + "</span></a>" +
+      '<div class="doc-btns"><a class="btn btn-line btn-block" href="' + pf + '" data-doc-open="' + esc(d.id) + '">' + ic("user") + "<span>" + esc(t("View profile")) + "</span></a>" +
+      '<a class="btn btn-deep btn-block" href="#book" data-book data-dept="' + esc(bookDept) + '" data-doc="' + esc(d.id) + '">' + ic("cal") + "<span>" + esc(t("Book with {x}", { x: lv(d, "name") })) + "</span></a></div>" +
       "</div></article>";
   }).join("");
 }
+
+/* ── doctor profile (dialog) ── */
+const dlg = $("#docDialog");
+let PID = "";
+const lst = (o, f) => lv(o, f).split(/\r?\n|[;؛|]+/).map(x => x.trim()).filter(Boolean);
+function fillProfile(id){
+  const d = doc(id); if (!d) return false;
+  const dps = docDepts(d).map(dept).filter(Boolean), langs = lv(d, "languages");
+  const about = (lv(d, "profile") || lv(d, "bio")).split(/\r?\n+/).map(x => x.trim()).filter(Boolean);
+  const spec = lst(d, "specialties");
+  let treat = lst(d, "treatments");
+  if (!treat.length){ const seen = {}; dps.forEach(dp => servIn(dp.id).forEach(s => { const n = lv(s, "name"); if (n && !seen[n]){ seen[n] = 1; treat.push(n); } })); }
+  const sec = (title, inner) => '<section class="dp-sec"><h3>' + esc(t(title)) + "</h3>" + inner + "</section>";
+  const ul = a => '<ul class="ticks cols">' + a.map(x => "<li>" + ic("check") + "<span>" + esc(x) + "</span></li>").join("") + "</ul>";
+  $("#dpBody").innerHTML =
+    '<div class="dp-head">' + docPhoto(d, "dp") + '<div><span class="type-chip">' + esc(dps.map(x => lv(x, "name")).join(" · ")) + "</span>" +
+    '<h2 class="f-title" id="dpName">' + esc(lv(d, "name")) + '</h2><p class="dev">' + esc(lv(d, "title")) + "</p>" +
+    (langs ? '<p class="doc-lang">' + ic("chat") + "<span>" + esc(t("Languages")) + ": " + esc(langs) + "</span></p>" : "") + "</div></div>" +
+    (about.length ? sec("About the doctor", about.map(p => "<p>" + esc(p) + "</p>").join("")) : "") +
+    (spec.length ? sec("Specialties", ul(spec)) : "") +
+    (treat.length ? sec("Treatments offered", ul(treat)) : "") +
+    '<div class="btns"><a class="btn btn-deep" href="#book" data-book data-profile-close data-dept="' + esc(dps[0] ? dps[0].id : d.department) + '" data-doc="' + esc(d.id) + '">' + ic("cal") + "<span>" + esc(t("Book with {x}", { x: lv(d, "name") })) + "</span></a></div>";
+  return true;
+}
+function openProfile(id){
+  if (!fillProfile(id)) return;
+  PID = String(id);
+  if (!dlg.open){
+    if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+    document.body.classList.add("modal-open"); document.body.style.overflow = "hidden";
+  }
+  $(".mcard", dlg).scrollTop = 0;
+  try { history.replaceState(null, "", location.pathname + location.search + "#dr-" + encodeURIComponent(PID)); } catch (e) {}
+}
+function closeProfile(){
+  if (typeof dlg.close === "function") dlg.close();
+  else { dlg.removeAttribute("open"); dlg.dispatchEvent(new Event("close")); }
+}
+dlg.addEventListener("close", () => {
+  document.body.classList.remove("modal-open"); document.body.style.overflow = "";
+  if (/^#dr-/.test(location.hash)){ try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} }
+});
+dlg.addEventListener("click", e => { if (e.target === dlg) closeProfile(); });
+window.addEventListener("hashchange", () => {
+  const m = location.hash.match(/^#dr-(.+)$/);
+  if (m) openProfile(decodeURIComponent(m[1])); else if (dlg.open) closeProfile();
+});
 
 /* ── FAQ ── */
 function renderFaq(){
@@ -1400,6 +1591,7 @@ $("#bookReq").addEventListener("submit", e => {
   if (g("name").length < 2) return bad("name", t("Please enter your name."));
   const ph = g("phone").replace(/\D/g, ""); if (ph.length < 7 || ph.length > 15) return bad("phone", t("Please enter a valid phone number."));
   if (!g("date")) return bad("date", t("Please choose a date."));
+  const cm = closedMsg(g("date")); if (cm) return bad("date", cm);
   err.textContent = "";
   const d = doc(SEL.doc), dp = dept(SEL.dept), tm = f.elements.time;
   const msg = t("Booking request") + "\n" + t("Department") + ": " + (dp ? lv(dp, "name") : "") + "\n" + t("Doctor") + ": " + (d ? lv(d, "name") : t("Any available doctor")) +
@@ -1411,6 +1603,14 @@ $("#bookReq").addEventListener("submit", e => {
   s.hidden = false;
   s.innerHTML = '<div class="badge">' + ic("check") + "</div><h3>" + esc(t("Thank you, {x}.", { x: g("name").split(" ")[0] })) + "</h3><p>" + esc(t("Your request is ready in WhatsApp. Press send and we will confirm your appointment.")) + '</p><button class="btn btn-line" type="button">' + esc(t("Book another")) + "</button>";
   $("button", s).onclick = () => { s.hidden = true; f.hidden = false; f.reset(); };
+});
+
+$("#bookReq").addEventListener("change", e => {
+  if (e.target.name !== "date") return;
+  const f = e.currentTarget, m = closedMsg(e.target.value);
+  syncTimes(f);
+  if (m) e.target.setAttribute("aria-invalid", "true"); else e.target.removeAttribute("aria-invalid");
+  $(".f-err", f).textContent = m;
 });
 
 /* ── how booking works ── */
@@ -1451,6 +1651,10 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && document.b
 
 /* ── global clicks ── */
 document.addEventListener("click", e => {
+  const po = e.target.closest("[data-doc-open]");
+  if (po){ e.preventDefault(); openProfile(po.dataset.docOpen); return; }
+  const pc = e.target.closest("[data-profile-close]");
+  if (pc){ closeProfile(); if (!pc.matches("[data-book]")) return; }
   const bk = e.target.closest("[data-book]");
   if (bk){ if (bk.dataset.dept || bk.dataset.doc) choose(bk.dataset.dept || SEL.dept, bk.dataset.doc || ""); return; }
   const df = e.target.closest("[data-docfilter]");
@@ -1498,7 +1702,8 @@ function renderSchema(){
 
 function renderAll(){
   if (!D) return;
-  renderSettings(); renderContact(); renderStats(); renderMarquee(); renderDepts(); renderTreatments(); renderDoctors(); renderFaq(); renderBooking(); renderHow();
+  renderSettings(); renderContact(); renderStats(); renderMarquee(); renderDepts(); renderTreatments(); renderDoctors(); renderFaq(); renderBooking(); renderHow(); renderHours(); renderEmergency();
+  if (dlg.open) fillProfile(PID);
   observe(document);
 }
 
@@ -1515,6 +1720,7 @@ function renderAll(){
   setLang(L, false);
   renderSchema();
   h.classList.remove("loading");
+  const dm = location.hash.match(/^#dr-(.+)$/); if (dm) openProfile(decodeURIComponent(dm[1]));
   onScroll();
   if (location.hash){ const el = document.getElementById(location.hash.slice(1)); if (el) setTimeout(() => el.scrollIntoView(), 50); }
 })();
